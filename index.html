@@ -1407,7 +1407,7 @@
             let totalBrutoPedido = 0;   
             let totalCookies = 0;
             let subtotalCookies = 0;    
-            const cookiesGrupos = ["Cookies"];  
+            const cookiesGrupos = ["Cookies"];   
             let hasCookieItem = false;
             let temErroDeMinimo = false; 
 
@@ -1431,7 +1431,7 @@
 
                 if (quantidade > 0 && (!isIndividualMinCheck || isItemValido)) {
                     const totalItem = quantidade * preco;
-                    totalBrutoPedido += totalItem;  
+                    totalBrutoPedido += totalItem;   
                 }
 
                 if (cookiesGrupos.includes(grupo)) {
@@ -1834,10 +1834,10 @@
                             </div>
                             <div class="resumo-item-input-group">
                                 <input type="number" 
-                                                min="0" 
-                                                value="${item.quantidade}" 
-                                                data-item-id="${item.itemId}" 
-                                                onblur="atualizarQuantidadeDireta(this)">
+                                                    min="0" 
+                                                    value="${item.quantidade}" 
+                                                    data-item-id="${item.itemId}" 
+                                                    onblur="atualizarQuantidadeDireta(this)">
                                 un.
                             </div>
                             <div class="resumo-item-actions">
@@ -2085,29 +2085,23 @@
 
         
         // -----------------------------------------------------
-        // NOVO: FUNÇÕES DO POPUP DE NATAL (MANTIDAS)
+        // NOVO: FUNÇÕES DO POPUP DE NATAL (AJUSTADAS)
         // -----------------------------------------------------
 
         /**
-         * Exibe o popup de Natal se o usuário ainda não o viu nesta sessão.
+         * Exibe o popup de Natal sempre.
          */
         function abrirPopupNatal() {
-            // Verifica se o usuário já fechou o popup nesta sessão.
-            // Usamos sessionStorage para que reapareça se o navegador for fechado e reaberto, 
-            // mas não a cada recarregamento de página.
-            const jaViuNatal = sessionStorage.getItem('favu_natal_popup_visto');
-
-            if (!jaViuNatal) {
-                document.getElementById('popup-natal').style.display = 'flex';
-            }
+            // REMOVEMOS A CHECAGEM DE sessionStorage. O POPUP SERÁ SEMPRE EXIBIDO.
+            document.getElementById('popup-natal').style.display = 'flex';
         }
 
         /**
-         * Fecha o popup de Natal e marca como visto na sessão.
+         * Fecha o popup de Natal.
          */
         function fecharPopupNatal() {
             document.getElementById('popup-natal').style.display = 'none';
-            sessionStorage.setItem('favu_natal_popup_visto', 'true');
+            // REMOVEMOS O SET DE sessionStorage.
         }
 
         // -----------------------------------------------------
