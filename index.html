@@ -44,13 +44,6 @@
             margin: 0;
         }
         
-        header img:first-child { 
-            width: 100%;
-            height: auto;
-            display: block;
-            margin: 0;
-        }
-        
         /* ---------------------------------------------------------------------- */
         /* BARRA DE NAVEGAÇÃO (STICKY) - MANTIDOS */
         /* ---------------------------------------------------------------------- */
@@ -101,14 +94,14 @@
             background-color: #c9bda5;
         }
         
-        /* Estilo da aba ATIVA */
+        /* Estilo da aba ATIVA (Cor de destaque: Verde-Azulado) */
         #categorias-horizontal a.active-link {
             background-color: #399466; 
             color: white;
         }
 
         /* ---------------------------------------------------------------------- */
-        /* ESTILOS DAS TABELAS (e dos grupos para o filtro) - AJUSTADOS (COOKIES) */
+        /* ESTILOS DAS TABELAS - MANTIDOS */
         /* ---------------------------------------------------------------------- */
         .categoria-group {
             transition: opacity 0.3s ease; 
@@ -154,9 +147,7 @@
         .categoria-group:not(#grupo-cookies) th:nth-child(3), .categoria-group:not(#grupo-cookies) td:nth-child(3) { width: 15%; } 
         .categoria-group:not(#grupo-cookies) th:nth-child(4), .categoria-group:not(#grupo-cookies) td:nth-child(4) { width: 15%; } 
 
-        /* *************************************************************** */
-        /* AJUSTE PARA A TABELA DE COOKIES (AGORA COM 3 COLUNAS NO HTML) */
-        /* *************************************************************** */
+        /* AJUSTE PARA A TABELA DE COOKIES (3 COLUNAS) */
         /* 1: Item | 2: UNID. (Preço) | 3: QUANTIDADE */
         #tabela-cookies th:nth-child(1), #tabela-cookies td:nth-child(1) { width: 55%; } /* ITEM */
         #tabela-cookies th:nth-child(2), #tabela-cookies td:nth-child(2) { width: 20%; } /* UNID. (Preço) */
@@ -184,16 +175,10 @@
         caption { display: none; }
         header img + img { display: none; }
 
-        /* Cores (AJUSTADAS) */
-        
-        /* A cor dos dados das colunas QUANTIDADE (td) é mantida em branco */
-        table#tabela-bolo-tradicional td:nth-child(4), table#tabela-bolo-especial td:nth-child(4), table#tabela-prato-salgado td:nth-child(4), table#tabela-doces td:nth-child(4), table#tabela-cookies td:nth-child(3), table#tabela-salfri td:nth-child(4), table#tabela-salgado-forno td:nth-child(4), table#tabela-salgado-vegetariano td:nth-child(4) { color: white; }
-
-        /* 2. Cor de todos os cabeçalhos de coluna (ITEM, QNT. MÍN/tamanho, UNID., QUANTIDADE) é definida como BRANCA */
-        th:nth-child(1), th:nth-child(2), th:nth-child(3), th:nth-child(4) { color: white; }
-        
-        /* Corrige o item em si para a cor correta (MANTIDA EM BRANCO) */
-        table#tabela-bolo-tradicional td:nth-child(1), table#tabela-bolo-especial td:nth-child(1), table#tabela-prato-salgado td:nth-child(1), table#tabela-doces td:nth-child(1), table#tabela-cookies td:nth-child(1), table#tabela-salfri td:nth-child(1), table#tabela-salgado-forno td:nth-child(1), table#tabela-salgado-vegetariano td:nth-child(1) { color: white; }
+        /* Cores (A cor dos dados das colunas QUANTIDADE é BRANCA, como o fundo) */
+        table td:nth-child(3), table td:nth-child(4) { color: white; }
+        th { color: white; }
+        table td:nth-child(1) { color: white; }
 
 
         .item-nome { font-weight: bold; color: inherit; }
@@ -211,7 +196,7 @@
         .quantidade-container { 
             text-align: center; 
             display: flex;
-            flex-direction: column; /* Para empilhar o input e a mensagem de erro */
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             padding: 0;
@@ -234,7 +219,7 @@
             -moz-appearance: textfield; /* Firefox */
         }
         
-        /* OCULTAÇÃO DE SETAS: Aplicado a ambos os inputs numéricos */
+        /* OCULTAÇÃO DE SETAS */
         .quantidade-container input[type="number"]::-webkit-outer-spin-button,
         .quantidade-container input[type="number"]::-webkit-inner-spin-button,
         .resumo-item-input-group input::-webkit-outer-spin-button, 
@@ -243,13 +228,12 @@
             margin: 0;
         }
         
-        /* CORREÇÃO PARA MENSAGEM DE ERRO/MINIMO PARA DOCES, SALGADOS FRITOS E FORNO */
+        /* MENSAGEM DE ERRO/MINIMO PARA ITENS INDIVIDUAIS */
         .erro-item-unico { 
             color: red; 
             display: none; 
             font-size: 0.9em; 
             margin-top: 5px;
-            /* ADICIONADO: Garante que a mensagem de erro individual não quebre o layout */
             line-height: 1.1; 
             width: 100%;
             text-align: center;
@@ -310,9 +294,9 @@
             color: #1A2B0F;
         }
         
-        /* Cor do botão de rodapé "Ver Pedido" alterada para o AZUL ESPECÍFICO */
+        /* Cor do botão de rodapé "Ver Pedido" (Verde-Azulado principal) */
         #summary-button {
-            background-color: #399466; /* AZUL SOLICITADO */
+            background-color: #399466; 
             color: white; 
             padding: 12px 20px;
             border-radius: 10px;
@@ -332,7 +316,7 @@
         }
         /* ---------------------------------------------------------------------- */
 
-        /* Estilos de Botões e Popup - MANTIDOS/AJUSTADOS */
+        /* Estilos de Botões e Input - A SESSÃO ABAIXO FOI ALTERADA PARA PADRONIZAR OS BOTÕES */
         select, input { text-align: center; }
         
         /* Input do Pop-up e Input da Tabela principal (para padronizar) */
@@ -343,7 +327,7 @@
             font-family: 'Basic Choice 2', Arial, sans-serif;
         }
         
-        /* MODIFICAÇÃO AQUI: Fundo branco e fonte padronizada para inputs do resumo */
+        /* Estilo dos inputs de quantidade no resumo (pop-up) */
         .resumo-item-input-group input {
             background-color: white; /* Fundo branco solicitado */
             border: 1px solid #ccc;
@@ -351,7 +335,7 @@
             font-family: 'Basic Choice 2', Arial, sans-serif; /* Fonte padronizada */
         }
 
-        /* Cor do botão primário (Fazer Pedido/Continuar Comprando) */
+        /* Estilo do botão Primário (CONFIRMAR PEDIDO, FAZER PEDIDO, CONTINUAR COMPRANDO, EDITAR PEDIDO) */
         button { 
             padding: 10px; 
             border-radius: 20px; 
@@ -362,15 +346,35 @@
             font-family: 'Basic Choice 2', Arial, sans-serif; 
             width: 100%; 
             font-size: 18px; 
-            margin-top: 10px; /* Ajustado para espaçamento consistente */
+            margin-top: 10px;
             box-shadow: 0 4px #4c7e93; /* Sombra padrão azul */
         }
+        
+        /* [NOVO]: Garante que o botão 'FAZER PEDIDO' no resumo, gerado dinamicamente, também tenha o estilo primário */
+        #fazer-pedido-button-container button {
+            background-color: #399466;
+            color: #FFF;
+            box-shadow: 0 4px #4c7e93;
+            border: none;
+        }
+        
+        /* [AJUSTADO]: O botão "CONTINUAR COMPRANDO" do resumo (id="btn-continuar-comprando") agora usa o estilo primário */
+        #popup-resumo button:not(#apply-cupom-btn):not(.btn-excluir):not(#fazer-pedido-button-container button) {
+            background-color: #399466;
+            color: #FFF;
+            box-shadow: 0 4px #4c7e93;
+            border: none;
+        }
+
+
+        /* [REMOVIDO]: A classe .btn-secundario foi removida. Os botões no form usarão o estilo padrão acima. */
+        
         button:active {
             box-shadow: 0 2px #4c7e93;
             transform: translateY(2px);
         }
 
-        /* MODIFICAÇÃO: Adicionando margem inferior ao botão VOLTAR */
+        /* Botão VOLTAR na tela principal (manteve o estilo primário) */
         #botao-voltar { 
             background-color: #399466; 
             color: #FFF; 
@@ -381,16 +385,14 @@
             cursor: pointer; 
             width: 100%; 
             margin-top: 20px; 
-            /* ADICIONADO ESPAÇAMENTO INFERIOR */
             margin-bottom: 20px; 
             font-family: 'Basic Choice 2', Arial, sans-serif; 
+            box-shadow: 0 4px #4c7e93; 
         }
 
         .erro { color: red; font-size: 14px; margin-top: 10px; }
         
-        #resumo { display: none; } 
-        
-        /* Estilos do Popup Geral */
+        /* Estilos do Popup Geral - MANTIDOS */
         .popup { 
             position: fixed; 
             z-index: 100; 
@@ -416,7 +418,7 @@
             overflow-y: auto; 
         }
         
-        /* ÍCONE DE FECHAR NO CANTO DIREITO (CORREÇÃO) */
+        /* ÍCONE DE FECHAR */
         .fechar { 
             color: #aaa; 
             font-size: 28px; 
@@ -428,11 +430,11 @@
             z-index: 110;
         }
 
-        /* Estilos específicos do conteúdo do Resumo */
+        /* Estilos específicos do conteúdo do Resumo - MANTIDOS */
         .popup-conteudo h2 { color: #1A2B0F; font-size: 26px; font-weight: bold; }
         .resumo-itens { text-align: left; padding-left: 0px; color: #1A2B0F; margin-bottom: 10px;}
         
-        /* ESTILOS DE TOTAIS */
+        /* ESTILOS DE TOTAIS - MANTIDOS */
         .resumo-total { 
             text-align: right; 
             font-size: 22px; 
@@ -441,7 +443,7 @@
             margin-top: 10px;
         }
         .resumo-total-line {
-            font-size: 16px; /* Menor que o TOTAL FINAL */
+            font-size: 16px; 
             font-weight: normal;
             display: flex;
             justify-content: space-between;
@@ -458,7 +460,7 @@
         }
 
 
-        /* Estilo do preço original riscado */
+        /* Estilo do preço original riscado (inativo) - MANTIDOS */
         .price-original-item {
             text-decoration: line-through;
             color: #888;
@@ -466,16 +468,16 @@
             margin-right: 5px;
         }
         
-        /* Estilo do preço final com desconto */
+        /* Estilo do preço final com desconto (inativo) */
         .price-final-item {
-             color: #E60000; /* Vermelho para destaque de desconto */
+             color: #E60000; 
         }
 
-        /* Estilo para cada item do resumo (linha do produto) */
+        /* Estilo para cada item do resumo (linha do produto) - MANTIDOS */
         .resumo-item-line {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Alinha tudo verticalmente */
+            align-items: center; 
             border-bottom: 1px dashed #399466; 
             padding: 8px 0;
             font-size: 14px;
@@ -495,19 +497,19 @@
             color: #1A2B0F;
         }
         .resumo-item-name .price-final-item {
-             color: #1A2B0F; /* O preço com desconto permanece preto aqui */
+             color: #1A2B0F; 
              font-weight: bold;
         }
 
-        /* Grupo de edição e exclusão no pop-up */
+        /* Grupo de edição e exclusão no pop-up - MANTIDOS */
         .resumo-item-input-group {
             display: flex;
             align-items: center;
             flex-shrink: 0;
-            gap: 5px; /* ESPAÇAMENTO REDUZIDO ENTRE UNIDADE E INPUT */
+            gap: 5px; 
         }
 
-        /* Estilo para o campo de input na edição direta (como na imagem) */
+        /* Estilo para o campo de input na edição direta */
         .resumo-item-input-group input {
             width: 55px; 
             height: 35px; 
@@ -516,27 +518,27 @@
             text-align: center;
             border-radius: 10px;
             box-sizing: border-box;
-            margin: 0; /* CORREÇÃO: Aproxima o input do UN. */
+            margin: 0; 
             
             -moz-appearance: textfield; 
         }
         
-        /* Botão de excluir (Excluir) - PADRONIZADO COM APLICAR */
+        /* Botão de excluir */
         .btn-excluir {
             background-color: #E60000; 
             color: white;
             width: 70px; 
             font-size: 12px; 
-            padding: 10px 0; /* AUMENTADO para igualar a altura do botão APLICAR */
-            margin: 0 0 0 10px; /* MAIOR ESPAÇAMENTO com UNIDADE */
+            padding: 10px 0; 
+            margin: 0 0 0 10px; 
             border-radius: 10px; 
             box-shadow: none;
             flex-shrink: 0;
-            line-height: 1; /* Centraliza o texto verticalmente */
-            height: 40px; /* Garante a altura */
+            line-height: 1; 
+            height: 40px; 
         }
         
-        /* ----------------- CUPOM STYLES ----------------- */
+        /* ----------------- CUPOM STYLES - MANTIDOS ----------------- */
         #cupom-container {
             background-color: #e8dcc6; 
             padding: 15px;
@@ -561,7 +563,7 @@
             background-color: white;
             color: #1A2B0F;
             box-sizing: border-box;
-            height: 40px; /* Ajuste para alinhar com o botão APLICAR */
+            height: 40px; 
         }
 
         #apply-cupom-btn {
@@ -570,9 +572,9 @@
             padding: 10px 0; 
             margin: 0;
             font-size: 14px;
-            background-color: #399466; /* Laranja para destaque */
+            background-color: #399466; 
             border-radius: 10px; 
-            height: 40px; /* Garante a altura para alinhar com o input */
+            height: 40px; 
         }
 
         .cupom-message {
@@ -590,57 +592,130 @@
         }
 
         /* ---------------------------------------------------------------------- */
-        /* ESTILOS DO POPUP DE INFORMAÇÕES DO PEDIDO (Novo Estilo) */
+        /* ESTILOS DO POPUP DE INFORMAÇÕES DO PEDIDO - MANTIDOS */
         /* ---------------------------------------------------------------------- */
         #form-pedido {
             display: flex;
-            flex-direction: column; /* Coloca os filhos em coluna */
-            gap: 15px; /* Espaçamento entre os campos */
+            flex-direction: column; 
+            gap: 15px; 
             text-align: left;
-            color: #1A2B0F; /* Cor do texto do rótulo */
+            color: #1A2B0F; 
         }
 
         #form-pedido label {
             font-weight: bold;
             font-size: 16px;
-            margin-bottom: -5px; /* Ajuste para aproximar do campo */
+            margin-bottom: -5px; 
         }
 
-        /* Estilo para todos os inputs e selects dentro do formulário */
+        /* Estilo para todos os inputs e selects dentro do formulário - MANTIDOS */
         #form-pedido input[type="text"],
         #form-pedido input[type="date"],
         #form-pedido input[type="time"],
         #form-pedido select {
-            /* Cor de fundo branca, conforme solicitação (como o campo de cupom) */
             background-color: white; 
             color: #1A2B0F;
-            border: 1px solid #399466; /* Borda azul padrão do site */
+            border: 1px solid #399466; 
             padding: 10px;
             border-radius: 10px;
             font-family: 'Basic Choice 2', Arial, sans-serif;
             font-size: 16px;
-            width: 100%; /* Ocupa a largura total para quebrar a linha */
+            width: 100%; 
             box-sizing: border-box;
-            text-align: left; /* Alinhamento do texto */
+            text-align: left; 
         }
         
-        /* Ajuste do input de nome para alinhamento esquerdo */
+        /* Ajuste do input de nome para alinhamento esquerdo - MANTIDOS */
         #form-pedido input[type="text"] {
             text-align: left;
         }
 
-        /* PADRONIZAÇÃO dos botões (CONFIRMAR/EDITAR/CONTINUAR COMPRANDO) com o botão azul principal */
+        /* [ALTERADO]: Todos os botões do formulário, incluindo EDITAR/CONTINUAR, usam o estilo principal */
         #form-pedido button {
-            background-color: #399466; /* Cor azul do "CONTINUAR COMPRANDO" */
-            box-shadow: 0 4px #4c7e93; /* Sombra do "CONTINUAR COMPRANDO" */
-            margin-top: 15px; /* Espaçamento padrão */
+            background-color: #399466; 
+            box-shadow: 0 4px #4c7e93; 
+            margin-top: 15px; 
+            color: #FFF;
+            border: none;
         }
 
-        /* O botão "CONTINUAR COMPRANDO" (era Cancelar) mantém o estilo do botão azul */
-        #form-pedido button:nth-of-type(2) { 
-            background-color: #399466;
-            box-shadow: 0 4px #4c7e93;
+        /* ---------------------------------------------------------------------- */
+        /* NOVO: POPUP DE NATAL (ESTILOS ATUALIZADOS) - MANTIDOS */
+        /* ---------------------------------------------------------------------- */
+        #popup-natal {
+            display: none; /* Inicialmente oculto */
+            position: fixed;
+            z-index: 101; /* Z-index maior que os outros popups */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Overlay mais escuro */
+            justify-content: center;
+            align-items: center;
         }
+
+        #popup-natal-conteudo {
+            background-color: #FFF5EB; /* COR SOLICITADA: FFF5EB */
+            color: #1A2B0F; /* Cor do texto ajustada para ser legível no fundo claro */
+            padding: 30px 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 4px solid #ED704F; /* Borda ajustada para a cor Laranja/Vermelha */
+        }
+        
+        #popup-natal-conteudo h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #ED704F; /* Título em cor de destaque */
+        }
+        
+        #popup-natal-conteudo p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        #popup-natal-conteudo ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 16px;
+            border: 2px solid #ED704F; /* Borda da lista */
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #F4E6CB; /* Fundo da lista mais claro */
+            color: #1A2B0F;
+        }
+        
+        #popup-natal-conteudo li {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #popup-natal-conteudo li span {
+            display: block;
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 5px;
+            color: #399466; /* Cor de destaque para o benefício */
+        }
+        
+        /* Estilo para o 'X' de fechar para o novo fundo claro */
+        #popup-natal-conteudo .fechar { 
+            color: #ED704F; 
+        }
+
+        /* O botão de fechar foi removido do HTML, mas mantemos o estilo do fechar (X) */
+        #btn-fechar-natal {
+            display: none; /* REMOVIDO CONFORME SOLICITADO */
+        }
+
         /* ---------------------------------------------------------------------- */
 
 
@@ -740,7 +815,7 @@
                     <th>UNID.</th>
                     <th>QUANTIDADE</th>
                 </tr>
-                <tbody></tby>
+                <tbody></tbody>
             </table>
         </div>
 
@@ -783,12 +858,6 @@
             </table>
         </div>
         
-        
-        <div id="resumo" style="display:none;"> 
-            <h2>Resumo do Pedido</h2>
-            <div id="resumo-itens" class="resumo-itens"></div>
-            <div id="resumo-total"></div>
-        </div>
         
         <button id="botao-voltar" onclick="window.location.replace('https://favucozinha.github.io/Favu/')">Voltar</button>
         
@@ -835,10 +904,10 @@
                         <option value="Cartão">Cartão</option>
                         <option value="Pix">Pix</option>
                     </select>
-
-                    <button type="button" onclick="confirmarPedido()">CONFIRMAR PEDIDO</button>
-                    <button type="button" onclick="fecharPopup()">CONTINUAR COMPRANDO</button> 
+                    
                     <button type="button" onclick="editarPedido()">EDITAR PEDIDO</button>
+                    <button type="button" onclick="fecharPopup()">CONTINUAR COMPRANDO</button> 
+                    <button type="button" onclick="confirmarPedido()">CONFIRMAR PEDIDO</button>
                 </form>
             </div>
         </div>
@@ -859,19 +928,81 @@
         </footer>
     </div>
 
+    <div id="popup-natal">
+        <div id="popup-natal-conteudo">
+            <span class="fechar" onclick="fecharPopupNatal()">&times;</span>
+            <h2>PRIMEIRO ANIVERSÁRIO DA FAVU! 🎂</h2>
+            <p>O natal está chegando e com ele o primeiro aniversário da FAVU Cozinha Afetiva.</p>
+            <p>Por isso temos um presente pra você!</p>
+            
+            <ul>
+                <li>
+                    - Pedidos acima de R$ 150,00
+                    <span> Ganham 3 FAVU Cookies 🍪</span>
+                </li>
+                <li>
+                    - Pedidos acima de R$ 300,00
+                    <span> Ganham os 3 FAVU Cookies 🍪</span>
+                    <span> + 10% de desconto no próximo pedido realizado pelo site 🎁</span>
+                </li>
+            </ul>
+            
+            <p style="font-size: 14px; font-weight: bold;">Promoção disponível para pedidos realizados até 20/12!</p>
+            </div>
+    </div>
     <script>
         // Variável global para armazenar o cupom aplicado
         let cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
         
-        // NOVAS CONSTANTES DE CUPOM
+        // CONSTANTES DE CUPOM
         const CUPOM_COOKIES10 = 'COOKIES10';
         const CUPOM_FAVU10 = 'FAVU10OFF';
         const CUPOM_FAVUCOOKIES = 'FAVUCOOKIES';
         
-        // ***************************************************************
+        // =======================================================
+        // NOVOS CUPONS GERADOS (USO ÚNICO E VALIDADE: ATÉ 28/02/2026)
+        // =======================================================
+        const CUPONS_GERADOS = {
+            // Exemplo de cupom de uso único solicitado (10% OFF no total, válido até 28/02/2026)
+            '11850273430': { 
+                descontoTipo: 'percentual', 
+                valor: 0.10, // 10%
+                aplicaEm: 'total', 
+                expiraEm: '2026-02-28', // Data de Expiração
+                usoUnico: true,
+                usado: false 
+            },
+            // Exemplo de cupom de uso único solicitado (10% OFF no total, válido até 28/02/2026)
+            '0047': { 
+                descontoTipo: 'percentual', 
+                valor: 0.10, // 10%
+                aplicaEm: 'total', 
+                expiraEm: '2026-02-28', // Data de Expiração
+                usoUnico: true,
+                usado: false 
+            },
+            // Inclua novos cupons de uso único aqui (uso único é uma simulação)
+            'NOVO15REAIS': { 
+                descontoTipo: 'valorFixo', 
+                valor: 15.00, // R$ 15,00 de desconto
+                aplicaEm: 'total',
+                expiraEm: '2026-02-28',
+                usoUnico: true,
+                usado: false 
+            },
+            'COOK20OFF': {
+                descontoTipo: 'percentual', 
+                valor: 0.20, // 20%
+                aplicaEm: 'cookies',
+                expiraEm: '2026-02-28',
+                minCookies: 4, 
+                usoUnico: true,
+                usado: false
+            }
+        };
+
         // REGRA DE MINIMO: Mini Cookie (ID) e Grupos (Doces, Salgados)
-        // ***************************************************************
-        // Lista de grupos que devem usar a VALIDAÇÃO DE MÍNIMO INDIVIDUAL (Doces e Salgados)
+        // Lista de grupos que devem usar a VALIDAÇÃO DE MÍNIMO INDIVIDUAL (Doces, Salgados Fritos, Salgados Forno, Salgados Vegetarianos)
         const gruposComMinimoIndividual = ["Doces", "Salgados Fritos", "Salgados Assados", "Salgados Vegetarianos"];
 
         // ID do Mini Cookie para tratamento especial (gerado pela função generateId)
@@ -939,7 +1070,7 @@
             { nome: "🎄Bolo de Noiva", tamanho: "G (3.5 KG)", preco: 300.00, min: 1, descricaoResumo: "Bolo de noiva - G (3.5 KG)", descricao: "Com cobertura de glacê "},
             { nome: "Bolo Prestígio", tamanho: "P (1.5 KG)", preco: 105.00, min: 1, descricaoResumo: "Bolo Prestígio - P (1.5 KG)", descricao: ""},
             { nome: "Bolo Prestígio", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo Prestígio - M (2.5 KG)", descricao: ""},
-            { nome: "Bolo Prestígio", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo Prestígio - G (3.5 KG)", descricao: ""},      
+            { nome: "Bolo Prestígio", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo Prestígio - G (3.5 KG)", descricao: ""},    
             { nome: "Bolo Red velvet", tamanho: "P (1.5 KG)", preco: 105.00, min: 1, descricaoResumo: "Bolo Red velvet - P (1.5 KG)", descricao: ""},
             { nome: "Bolo Red velvet", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo Red velvet - M (2.5 KG)", descricao: ""},
             { nome: "Bolo Red velvet", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo Red Velvet - G (3.5 KG)", descricao: ""},
@@ -958,7 +1089,7 @@
 
         const itensCookies = addGroupKeys([
             // MIN: 20 para o Mini Cookie, conforme solicitado. O ID gerado será 'mini-cookie'
-            // Os demais têm min: 1 e a checagem é feita no mínimo de grupo (3)
+            { nome: "Mini Cookie", min: 20, preco: 2.80, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
             { nome: "Cookie Tradicional", min: 1, preco: 12.00, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
             { nome: "Cookie Red Velvet", min: 1, preco: 12.00, descricaoResumo: "Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
             { nome: "Cookie Black", min: 1, preco: 12.00, descricaoResumo: "Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
@@ -1081,7 +1212,7 @@
         }
         
         // -----------------------------------------------------
-        // FUNÇÃO DE CRIAÇÃO DE TABELAS - CORRIGIDA (Nova verificação de erro)
+        // FUNÇÃO DE CRIAÇÃO DE TABELAS - MANTIDA
         // -----------------------------------------------------
         function criarTabelaGrupo(grupo, idTabela, nomeGrupo) {
             const tbody = document.getElementById(idTabela).querySelector('tbody');
@@ -1112,7 +1243,7 @@
                     if (item.groupKey !== grupoAtual) {
                         grupoAtual = item.groupKey;
                         isFirstInGroup = true;
-                        countGrupo = 1;
+                        countGrupo = 1; // Reseta a contagem para o novo grupo
                         let j = i + 1;
                         while (j < grupo.length && grupo[j].groupKey === grupoAtual) {
                             countGrupo++;
@@ -1121,7 +1252,7 @@
                     }
                     
                     if (item.groupKey === grupoAtual && i < grupo.length - 1 && grupo[i+1].groupKey === grupoAtual) {
-                                            tr.classList.add('item-group-active');
+                        tr.classList.add('item-group-active');
                     }
                 }
                 
@@ -1271,39 +1402,36 @@
             cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
             cupomMessage.className = 'cupom-message'; // Reset classes
             
-            // 1. Coleta e valida a quantidade e os subtotais
-            let totalBrutoPedido = 0; 
+            // --- 1. COLETA DE TOTAIS E VALIDAÇÃO DE MÍNIMOS EXISTENTES ---
+            
+            let totalBrutoPedido = 0;   
             let totalCookies = 0;
-            let subtotalCookies = 0; 
-            const cookiesGrupos = ["Cookies"]; 
+            let subtotalCookies = 0;    
+            const cookiesGrupos = ["Cookies"];  
             let hasCookieItem = false;
-            
-            
             let temErroDeMinimo = false; 
 
             document.querySelectorAll(".quantidade-input").forEach(input => {
                 const grupo = input.getAttribute("data-grupo");
-                // Usamos parseInt(input.value) || 0 para garantir que "0" seja tratado como 0
                 const quantidade = parseInt(input.value) || 0; 
                 const preco = parseFloat(input.getAttribute("data-preco")) || 0;
                 const min = parseInt(input.getAttribute("data-min")) || 1;
                 const itemId = input.getAttribute("data-item-id");
                 
-                // Checagem se é o Mini Cookie ou Doces/Salgados
                 const isMiniCookieCheck = itemId === MINI_COOKIE_ID;
                 const isDocesSalgadosCheck = gruposComMinimoIndividual.includes(grupo) && min > 1;
 
                 const isIndividualMinCheck = isDocesSalgadosCheck || isMiniCookieCheck;
                 const isItemValido = quantidade >= min;
                 
-                // Verifica erros de mínimo para não incluir o item no total bruto (apenas se a quantidade for > 0)
+                // Validação de mínimo individual para bloquear cálculo do total bruto
                 if (quantidade > 0 && isIndividualMinCheck && !isItemValido) {
                     temErroDeMinimo = true;
                 }
 
                 if (quantidade > 0 && (!isIndividualMinCheck || isItemValido)) {
                     const totalItem = quantidade * preco;
-                    totalBrutoPedido += totalItem; // Total de todo o pedido (válido para o FAVU10)
+                    totalBrutoPedido += totalItem;  
                 }
 
                 if (cookiesGrupos.includes(grupo)) {
@@ -1315,8 +1443,9 @@
                 }
             });
 
-            // Revalida se o mínimo do grupo Cookies (3) foi atingido (lógica para evitar descontos em pedidos inválidos)
-            const minTotalCookies = gruposItens["tabela-cookies"]?.minTotal || 0;
+            // Validação de mínimo do grupo Cookies
+            const idTabelaCookies = "tabela-cookies";
+            const minTotalCookies = gruposItens[idTabelaCookies]?.minTotal || 0;
             const cookiesValidos = totalCookies === 0 || totalCookies >= minTotalCookies;
             if (!cookiesValidos && totalCookies > 0) temErroDeMinimo = true;
             
@@ -1327,13 +1456,80 @@
                 return;
             }
 
-            // 2. Validação e Aplicação dos Cupons
-            const taxaDesconto = 0.10; // 10%
-            const minCookiesCupom = 4; // Mínimo de cookies para os cupons de cookies (COOKIES10 e FAVUCOOKIES)
-
-            // 2.1. CUPOM FAVU10 (10% no Total do Pedido - Qualquer dia)
-            if (cupomCode === CUPOM_FAVU10) {
+            // --- 2. TRATAMENTO DE CUPONS DE USO ÚNICO/EXPIRAÇÃO (NOVOS) ---
+            
+            const cupomDeUsoUnico = CUPONS_GERADOS[cupomCode];
+            if (cupomDeUsoUnico) {
                 
+                if (totalBrutoPedido === 0) {
+                     cupomAplicado.mensagem = 'Adicione itens ao carrinho antes de aplicar o cupom.';
+                     cupomMessage.classList.add('cupom-error');
+                     atualizarTotal();
+                     return;
+                }
+
+                // 2.1. Checagem de Uso Único
+                if (cupomDeUsoUnico.usoUnico && cupomDeUsoUnico.usado) {
+                    cupomAplicado.mensagem = 'Este cupom já foi utilizado.';
+                    cupomMessage.classList.add('cupom-error');
+                    atualizarTotal();
+                    return;
+                }
+
+                // 2.2. Checagem de Expiração
+                const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                if (cupomDeUsoUnico.expiraEm < hoje) {
+                    cupomAplicado.mensagem = 'Este cupom está expirado.';
+                    cupomMessage.classList.add('cupom-error');
+                    atualizarTotal();
+                    return;
+                }
+
+                // 2.3. Checagem de Aplicação em Cookies (se for o caso)
+                if (cupomDeUsoUnico.aplicaEm === 'cookies') {
+                    const minCookies = cupomDeUsoUnico.minCookies || 1;
+                    if (totalCookies < minCookies) {
+                        cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookies} COOKIES.`;
+                        cupomMessage.classList.add('cupom-error');
+                        atualizarTotal();
+                        return;
+                    }
+                }
+                
+                // 2.4. Aplica o Desconto
+                let baseCalculo = totalBrutoPedido;
+                let mensagemDesconto = `OFF no total`;
+
+                if (cupomDeUsoUnico.aplicaEm === 'cookies') {
+                    baseCalculo = subtotalCookies;
+                    mensagemDesconto = `OFF em Cookies`;
+                }
+                
+                let descontoTotal = 0;
+                if (cupomDeUsoUnico.descontoTipo === 'percentual') {
+                    descontoTotal = baseCalculo * cupomDeUsoUnico.valor;
+                    mensagemDesconto = `${(cupomDeUsoUnico.valor * 100).toFixed(0)}% ${mensagemDesconto}`;
+                } else if (cupomDeUsoUnico.descontoTipo === 'valorFixo') {
+                    descontoTotal = cupomDeUsoUnico.valor;
+                    mensagemDesconto = `R$ ${descontoTotal.toFixed(2).replace('.', ',')} ${mensagemDesconto}`;
+                }
+                
+                // Em um sistema real, aqui você chamaria o servidor para marcar o cupom como USADO.
+                // cupomDeUsoUnico.usado = true;
+                
+                cupomAplicado = {
+                    codigo: cupomCode,
+                    desconto: descontoTotal, 
+                    mensagem: `CUPOM ${cupomCode} APLICADO! (${mensagemDesconto})` 
+                };
+                cupomMessage.classList.add('cupom-success');
+
+
+            // --- 3. TRATAMENTO DE CUPONS DE USO COMUM (ANTIGOS) ---
+
+            } else if (cupomCode === CUPOM_FAVU10) {
+                
+                const taxaDesconto = 0.10;
                 if (totalBrutoPedido === 0) {
                     cupomAplicado.mensagem = 'Adicione itens ao carrinho antes de aplicar o cupom.';
                     cupomMessage.classList.add('cupom-error');
@@ -1346,12 +1542,14 @@
                 cupomAplicado = {
                     codigo: cupomCode,
                     desconto: descontoTotal, 
-                    mensagem: `CUPOM ${cupomCode} APLICADO! (10% OFF no total)` 
+                    mensagem: `CUPOM ${cupomCode} APLICADO! (10% OFF no total)`  
                 };
                 cupomMessage.classList.add('cupom-success');
                 
-            // 2.2. CUPOM COOKIES10 (10% em Cookies - Qualquer dia - REQUER MÍNIMO DE 4 UNIDADES)
             } else if (cupomCode === CUPOM_COOKIES10) {
+                
+                const taxaDesconto = 0.10;
+                const minCookiesCupom = 4;
                 
                 if (!hasCookieItem) {
                     cupomAplicado.mensagem = 'Cupom válido apenas para Cookies.';
@@ -1360,7 +1558,6 @@
                     return;
                 }
                 
-                // CHECK MÍNIMO DE 4 UNIDADES DE COOKIES
                 if (totalCookies < minCookiesCupom) {
                     cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookiesCupom} COOKIES.`;
                     cupomMessage.classList.add('cupom-error');
@@ -1377,10 +1574,11 @@
                 };
                 cupomMessage.classList.add('cupom-success');
                 
-            // 2.3. Validação do Cupom FAVUCOOKIES (Regra antiga: Segunda a Quinta, Mínimo 4 Cookies)
             } else if (cupomCode === CUPOM_FAVUCOOKIES) {
                 
-                // Validação de Item
+                const taxaDesconto = 0.10;
+                const minCookiesCupom = 4;
+                
                 if (!hasCookieItem) {
                     cupomAplicado.mensagem = 'Cupom válido apenas para Cookies.';
                     cupomMessage.classList.add('cupom-error');
@@ -1388,19 +1586,16 @@
                     return;
                 }
                 
-                // Validação de Data: USA A DATA ATUAL
                 const dataAtual = new Date();
-                const diaDaSemana = dataAtual.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+                const diaDaSemana = dataAtual.getDay(); 
 
-                // Válido de Segunda (1) a Quinta (4)
-                if (diaDaSemana === 0 || diaDaSemana === 5 || diaDaSemana === 6) { // Domingo, Sexta, Sábado
+                if (diaDaSemana === 0 || diaDaSemana === 5 || diaDaSemana === 6) { 
                     cupomAplicado.mensagem = 'Cupom válido apenas para pedidos realizados entre Segunda e Quinta-feira.';
                     cupomMessage.classList.add('cupom-error');
                     atualizarTotal();
                     return;
                 }
 
-                // Validação de Quantidade (também exige 4)
                 if (totalCookies < minCookiesCupom) {
                     cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookiesCupom} COOKIES.`;
                     cupomMessage.classList.add('cupom-error');
@@ -1408,7 +1603,6 @@
                     return;
                 }
                 
-                // Aplicação do Desconto
                 const descontoTotal = subtotalCookies * taxaDesconto; 
                 
                 cupomAplicado = {
@@ -1419,6 +1613,7 @@
                 cupomMessage.classList.add('cupom-success');
                 
             } else if (cupomCode) {
+                // CUPOM INVÁLIDO GENÉRICO
                 cupomAplicado.mensagem = `Código "${cupomCode}" inválido.`;
                 cupomMessage.classList.add('cupom-error');
             }
@@ -1426,6 +1621,7 @@
             cupomMessage.textContent = cupomAplicado.mensagem;
             atualizarTotal();
         }
+
         
         // -----------------------------------------------------
         // FUNÇÕES DE EDIÇÃO E EXCLUSÃO - MANTIDAS
@@ -1438,7 +1634,7 @@
         function excluirItem(itemId) {
             const inputNoMain = document.querySelector(`.quantidade-input[data-item-id="${itemId}"]`);
             if (inputNoMain) {
-                inputNoMain.value = "0"; // Alterado para '0' (zero) para manter a coerência visual
+                inputNoMain.value = "0"; 
                 // Dispara o evento 'input' para atualizar a interface imediatamente
                 inputNoMain.dispatchEvent(new Event('input')); 
             }
@@ -1491,7 +1687,7 @@
         }
         
         // -----------------------------------------------------
-        // FUNÇÃO DE ATUALIZAÇÃO DO TOTAL - CORRIGIDA
+        // FUNÇÃO DE ATUALIZAÇÃO DO TOTAL - MANTIDA
         // -----------------------------------------------------
         function atualizarTotal() {
             let totalBruto = 0;
@@ -1588,14 +1784,14 @@
                         let shouldIncludeInTotal = true;
                         
                         // Checa o erro individual (Mini Cookie ou Doces/Salgados)
-                        if (isIndividualMinCheck && !isItemValido) { 
-                                 shouldIncludeInTotal = false;
-                                 temErroDeMinimo = true; // Marca erro se falhar no min individual
+                        if (isIndividualMinCheck && !isItemValido) {  
+                            shouldIncludeInTotal = false;
+                            temErroDeMinimo = true; // Marca erro se falhar no min individual
                         }
                         
                         // Checa o erro de grupo para Cookies (ou outros grupos com minTotal > 0)
                         if (minTotal > 0 && !grupoValido) {
-                                 shouldIncludeInTotal = false; // Marca erro se falhar no min de grupo
+                            shouldIncludeInTotal = false; // Marca erro se falhar no min de grupo
                         }
                         
                         if (shouldIncludeInTotal) {
@@ -1638,10 +1834,10 @@
                             </div>
                             <div class="resumo-item-input-group">
                                 <input type="number" 
-                                            min="0" 
-                                            value="${item.quantidade}" 
-                                            data-item-id="${item.itemId}" 
-                                            onblur="atualizarQuantidadeDireta(this)">
+                                                min="0" 
+                                                value="${item.quantidade}" 
+                                                data-item-id="${item.itemId}" 
+                                                onblur="atualizarQuantidadeDireta(this)">
                                 un.
                             </div>
                             <div class="resumo-item-actions">
@@ -1655,27 +1851,28 @@
             // 2. Atualiza o total exibido no Pop-up (incluindo desconto se houver)
             if (descontoTotal > 0) {
                  resumoTotalPopup.innerHTML = `
-                    <div class="resumo-total-line">SUBTOTAL: R$ ${totalBrutoFormatado}</div>
-                    <div class="resumo-total-line total-com-desconto">DESCONTO CUPOM: R$ ${descontoTotal.toFixed(2).replace('.', ',')}</div>
-                    <div class="resumo-total">TOTAL: R$ ${totalLiquidoFormatado}</div>
-                    `;
+                     <div class="resumo-total-line">SUBTOTAL: R$ ${totalBrutoFormatado}</div>
+                     <div class="resumo-total-line total-com-desconto">DESCONTO CUPOM: R$ ${descontoTotal.toFixed(2).replace('.', ',')}</div>
+                     <div class="resumo-total">TOTAL: R$ ${totalLiquidoFormatado}</div>
+                     `;
             } else {
                  resumoTotalPopup.textContent = `TOTAL: R$ ${totalBrutoFormatado}`;
                  // Garante que o campo de cupom não mantenha a mensagem de sucesso se o total for 0
                  const cupomMessage = document.getElementById('cupom-message');
                  if (totalBruto === 0 && cupomMessage) {
-                     cupomMessage.textContent = '';
-                     cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
-                     }
+                      cupomMessage.textContent = '';
+                      cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
+                      }
             }
 
-            // 3. Controla a visibilidade do botão "Fazer Pedido" no pop-up (AJUSTADO: SÓ PRECISA DE totalBruto > 0)
-            if (totalBruto > 0) {
+            // 3. Controla a visibilidade do botão "FAZER PEDIDO" no pop-up (usa o estilo padrão definido em <button>)
+            if (totalBruto > 0 && !temErroDeMinimo) {
+                 // Certifica que o botão FAZER PEDIDO tenha o estilo principal
                  fazerPedidoContainer.innerHTML = '<button onclick="abrirPopup()">FAZER PEDIDO</button>';
             } else {
                  fazerPedidoContainer.innerHTML = '';
             }
-
+            
             // 4. Atualiza e exibe o Rodapé Fixo
             if (totalBruto > 0) {
                 document.getElementById("summary-total").textContent = `R$ ${totalLiquidoFormatado}`;
@@ -1690,7 +1887,7 @@
         }
         
         // -----------------------------------------------------
-        // FUNÇÕES POPUP E CONFIRMAR PEDIDO - CORRIGIDA
+        // FUNÇÕES POPUP E CONFIRMAR PEDIDO - MANTIDAS
         // -----------------------------------------------------
         function abrirResumoPopup() {
             // Garante que a mensagem do cupom seja exibida corretamente ao abrir
@@ -1803,9 +2000,9 @@
                     let shouldIncludeInTotal = true;
 
                     // Checagem Individual
-                    if (item.quantidade > 0 && isIndividualMinCheck && !isItemValido) { 
-                                 shouldIncludeInTotal = false;
-                                 temErroDeMinimo = true;
+                    if (item.quantidade > 0 && isIndividualMinCheck && !isItemValido) {  
+                                                shouldIncludeInTotal = false;
+                                                temErroDeMinimo = true;
                     }
                     // Checagem de Grupo
                     if (minTotal > 0 && !grupoValido) {
@@ -1878,9 +2075,42 @@
             const whatsappLink = `https://wa.me/558195256641?text=${encodeURIComponent(resumoWhatsapp)}`;
             window.open(whatsappLink, '_blank');
 
+            // Marca o cupom de uso único como usado após o envio do pedido
+            if (CUPONS_GERADOS[cupomAplicado.codigo]) {
+                CUPONS_GERADOS[cupomAplicado.codigo].usado = true;
+            }
+
             resetarCampos();
         }
 
+        
+        // -----------------------------------------------------
+        // NOVO: FUNÇÕES DO POPUP DE NATAL (MANTIDAS)
+        // -----------------------------------------------------
+
+        /**
+         * Exibe o popup de Natal se o usuário ainda não o viu nesta sessão.
+         */
+        function abrirPopupNatal() {
+            // Verifica se o usuário já fechou o popup nesta sessão.
+            // Usamos sessionStorage para que reapareça se o navegador for fechado e reaberto, 
+            // mas não a cada recarregamento de página.
+            const jaViuNatal = sessionStorage.getItem('favu_natal_popup_visto');
+
+            if (!jaViuNatal) {
+                document.getElementById('popup-natal').style.display = 'flex';
+            }
+        }
+
+        /**
+         * Fecha o popup de Natal e marca como visto na sessão.
+         */
+        function fecharPopupNatal() {
+            document.getElementById('popup-natal').style.display = 'none';
+            sessionStorage.setItem('favu_natal_popup_visto', 'true');
+        }
+
+        // -----------------------------------------------------
         
         document.addEventListener("DOMContentLoaded", function () {
             
@@ -1946,10 +2176,11 @@
                 primeiroGrupo.classList.add('active-group');
             }
             
-            // 5. FECHAMENTO DO POPUP AO CLICAR FORA (CORREÇÃO)
+            // 5. FECHAMENTO DO POPUP AO CLICAR FORA 
             document.addEventListener('click', function(event) {
                 const popupResumo = document.getElementById('popup-resumo');
                 const popupPedido = document.getElementById('popup-pedido');
+                const popupNatal = document.getElementById('popup-natal'); // NOVO: Popup de Natal
                 
                 // Fechando o pop-up de resumo se o clique for no overlay
                 if (popupResumo && popupResumo.style.display === 'flex' && event.target === popupResumo) {
@@ -1960,6 +2191,11 @@
                 if (popupPedido && popupPedido.style.display === 'flex' && event.target === popupPedido) {
                     fecharPopup();
                 }
+
+                // NOVO: Fechando o pop-up de Natal se o clique for no overlay
+                if (popupNatal && popupNatal.style.display === 'flex' && event.target === popupNatal) {
+                    fecharPopupNatal();
+                }
             });
 
 
@@ -1969,6 +2205,9 @@
             }
 
             atualizarTotal();
+
+            // NOVO: CHAMA O POPUP DE NATAL AO FINAL DO DOMContentLoaded
+            abrirPopupNatal();
         });
     </script>
     
