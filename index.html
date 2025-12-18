@@ -878,7 +878,7 @@
 
             <!-- Texto de regra dos cookies tradicionais (abaixo da segunda tabela) -->
             <div class="cookies-regra-texto">
-                *Pedido mínimo de 3 cookies, podendo ser de qualquer sabor (Tradicional, Black ou Red Velvet).
+                * Pedido mínimo de 3 cookies, podendo ser de qualquer sabor (Tradicional, Black ou Red Velvet) *
             </div>
         </div>
 
@@ -1170,9 +1170,9 @@
         const itensCookies = addGroupKeys([
             // MIN: 20 para o Mini Cookie, conforme solicitado. O ID gerado será 'mini-cookie'
             { nome: "Mini Cookie", min: 20, preco: 2.80, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
-            { nome: "*Cookie Tradicional", min: 1, preco: 12.00, descricaoResumo: "*Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
-            { nome: "*Cookie Red Velvet", min: 1, preco: 12.00, descricaoResumo: "*Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
-            { nome: "*Cookie Black", min: 1, preco: 12.00, descricaoResumo: "*Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
+            { nome: "Cookie Tradicional *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
+            { nome: "Cookie Red Velvet *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
+            { nome: "Cookie Black *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
         ]).map(item => ({...item, id: generateId(item.nome)}));
 
         const itensSalgadoFrito = addGroupKeys([
@@ -2411,4 +2411,5 @@
     </script>
     
 </body>
+
 </html>
