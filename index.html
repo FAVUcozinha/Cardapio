@@ -147,11 +147,21 @@
         .categoria-group:not(#grupo-cookies) th:nth-child(3), .categoria-group:not(#grupo-cookies) td:nth-child(3) { width: 15%; } 
         .categoria-group:not(#grupo-cookies) th:nth-child(4), .categoria-group:not(#grupo-cookies) td:nth-child(4) { width: 15%; } 
 
-        /* AJUSTE PARA A TABELA DE COOKIES (3 COLUNAS) */
-        /* 1: Item | 2: UNID. (Preço) | 3: QUANTIDADE */
+        /* AJUSTE PARA AS TABELAS DE COOKIES */
+        /* Mini Cookies (4 colunas: ITEM | QNT. MÍN. | UNID. | QUANTIDADE) */
+        #tabela-cookies-mini {
+            margin-bottom: 32px; /* separação visual para a tabela de cookies tradicionais */
+        }
+        #tabela-cookies-mini th:nth-child(1), #tabela-cookies-mini td:nth-child(1) { width: 55%; } /* ITEM */
+        #tabela-cookies-mini th:nth-child(2), #tabela-cookies-mini td:nth-child(2) { width: 15%; } /* QNT. MÍN. */
+        #tabela-cookies-mini th:nth-child(3), #tabela-cookies-mini td:nth-child(3) { width: 15%; } /* UNID. */
+        #tabela-cookies-mini th:nth-child(4), #tabela-cookies-mini td:nth-child(4) { width: 15%; } /* QUANTIDADE */
+
+        /* Cookies Tradicionais (3 colunas: ITEM | UNID. | QUANTIDADE) 
+           Mantemos a coluna QUANTIDADE com 15% (mesmo tamanho visual dos demais grupos) */
         #tabela-cookies th:nth-child(1), #tabela-cookies td:nth-child(1) { width: 55%; } /* ITEM */
-        #tabela-cookies th:nth-child(2), #tabela-cookies td:nth-child(2) { width: 20%; } /* UNID. (Preço) */
-        #tabela-cookies th:nth-child(3), #tabela-cookies td:nth-child(3) { width: 25%; } /* QUANTIDADE */
+        #tabela-cookies th:nth-child(2), #tabela-cookies td:nth-child(2) { width: 30%; } /* UNID. (Preço) */
+        #tabela-cookies th:nth-child(3), #tabela-cookies td:nth-child(3) { width: 15%; } /* QUANTIDADE */
         
         /* Ajustes finos para td/th */
         th, td { 
@@ -230,7 +240,7 @@
         
         /* MENSAGEM DE ERRO/MINIMO PARA ITENS INDIVIDUAIS */
         .erro-item-unico { 
-            color: red; 
+            color: #FFD966; /* amarelo suave para destacar o mínimo */
             display: none; 
             font-size: 0.9em; 
             margin-top: 5px;
@@ -241,13 +251,28 @@
 
         /* NOVO ESTILO: Erro de mínimo na CATEGORIA (ex: Cookies) */
         .erro-categoria {
-            color: red; 
+            color: #ffffff; 
             font-size: 14px; 
             margin-top: 10px; 
             font-weight: bold;
             text-align: center;
             display: none; /* Inicia oculto */
             padding-bottom: 5px;
+        }
+
+        /* Linha de separação visual dentro da tabela de Cookies
+           (usada para separar Mini Cookie dos demais sabores) */
+        .cookies-separator-row td {
+            padding-top: 32px;
+            border: none;
+        }
+
+        .cookies-regra-texto {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-align: center;
+            margin-top: 24px;   /* espaço equivalente a ~2 linhas acima do texto */
+            margin-bottom: 8px; /* pequeno respiro antes da segunda tabela */
         }
 
         /* ---------------------------------------------------------------------- */
@@ -327,12 +352,38 @@
             font-family: 'Basic Choice 2', Arial, sans-serif;
         }
         
-        /* Estilo dos inputs de quantidade no resumo (pop-up) */
+        /* Estilo do grupo de quantidade no resumo (pop-up) */
+        .resumo-item-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
         .resumo-item-input-group input {
             background-color: white; /* Fundo branco solicitado */
             border: 1px solid #ccc;
             color: #1A2B0F;
             font-family: 'Basic Choice 2', Arial, sans-serif; /* Fonte padronizada */
+            width: 60px;
+            text-align: center;
+            height: 32px;
+        }
+
+        .resumo-qtd-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #399466;
+            color: #FFF;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
+            padding: 0;
+            margin-top: -2px; /* sobe levemente o botão para alinhar com o campo */
         }
 
         /* Estilo do botão Primário (CONFIRMAR PEDIDO, FAZER PEDIDO, CONTINUAR COMPRANDO, EDITAR PEDIDO) */
@@ -356,14 +407,7 @@
             color: #FFF;
             box-shadow: 0 4px #4c7e93;
             border: none;
-        }
-        
-        /* [AJUSTADO]: O botão "CONTINUAR COMPRANDO" do resumo (id="btn-continuar-comprando") agora usa o estilo primário */
-        #popup-resumo button:not(#apply-cupom-btn):not(.btn-excluir):not(#fazer-pedido-button-container button) {
-            background-color: #399466;
-            color: #FFF;
-            box-shadow: 0 4px #4c7e93;
-            border: none;
+            margin-top: 20px; /* afasta o botão do total */
         }
 
 
@@ -610,6 +654,7 @@
 
         /* Estilo para todos os inputs e selects dentro do formulário - MANTIDOS */
         #form-pedido input[type="text"],
+        #form-pedido input[type="tel"],
         #form-pedido input[type="date"],
         #form-pedido input[type="time"],
         #form-pedido select {
@@ -625,8 +670,9 @@
             text-align: left; 
         }
         
-        /* Ajuste do input de nome para alinhamento esquerdo - MANTIDOS */
-        #form-pedido input[type="text"] {
+        /* Ajuste dos inputs de texto/telefone para alinhamento esquerdo - MANTIDOS */
+        #form-pedido input[type="text"],
+        #form-pedido input[type="tel"] {
             text-align: left;
         }
 
@@ -637,6 +683,17 @@
             margin-top: 15px; 
             color: #FFF;
             border: none;
+        }
+
+        /* Container para os botões EDITAR/CONTINUAR lado a lado */
+        .form-buttons-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .form-buttons-row button {
+            flex: 1;
         }
 
         /* ---------------------------------------------------------------------- */
@@ -795,8 +852,22 @@
         <div class="categoria-group" id="grupo-cookies">
             <img src="cookies.png" alt="Cookies" id="img-cookies"> 
             <div id="erro-cookies" class="erro-categoria">Mínimo de 3 unidades na categoria Cookies.</div> 
+
+            <!-- Tabela 1: Mini Cookies (com QNT. MÍN.) -->
+            <table id="tabela-cookies-mini">
+                <caption>Mini Cookies</caption>
+                <tr>
+                    <th>ITEM</th>
+                    <th>QNT. MÍN.</th>
+                    <th>UNID.</th>
+                    <th>QUANTIDADE</th>
+                </tr>
+                <tbody></tbody>
+            </table>
+
+            <!-- Tabela 2: Cookies Tradicional / Red Velvet / Black (sem QNT. MÍN.) -->
             <table id="tabela-cookies">
-                <caption>Cookies</caption>
+                <caption>Cookies Tradicionais</caption>
                 <tr>
                     <th>ITEM</th>
                     <th>UNID.</th>
@@ -804,6 +875,11 @@
                 </tr>
                 <tbody></tbody>
             </table>
+
+            <!-- Texto de regra dos cookies tradicionais (abaixo da segunda tabela) -->
+            <div class="cookies-regra-texto">
+                *Pedido mínimo de 3 cookies, podendo ser de qualquer sabor (Tradicional, Black ou Red Velvet).
+            </div>
         </div>
 
         <div class="categoria-group" id="grupo-salfri">
@@ -864,7 +940,7 @@
         <div id="popup-resumo" class="popup">
             <div class="popup-conteudo">
                 <span class="fechar" onclick="fecharResumoPopup()">&times;</span>
-                <h2>SEU PEDIDO</h2>
+                <h2>INFORMAÇÕES DO PEDIDO</h2>
                 
                 <div id="popup-resumo-itens" class="resumo-itens"></div>
                 
@@ -878,9 +954,7 @@
                 </div>
                 <div id="popup-resumo-total" class="resumo-total"></div>
                 
-                <div id="fazer-pedido-button-container">
-                    </div>
-                <button onclick="fecharResumoPopup()">CONTINUAR COMPRANDO</button>
+                <div id="fazer-pedido-button-container"></div>
             </div>
         </div>
         
@@ -892,6 +966,9 @@
                     <label for="nome">NOME:</label>
                     <input type="text" id="nome" name="nome" placeholder="Seu Nome Completo" required>
 
+                    <label for="telefone">NÚMERO (WHATSAPP):</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(DDD) 9XXXX-XXXX" required>
+
                     <label for="data">DATA DA ENTREGA:</label>
                     <input type="date" id="data" name="data" required>
 
@@ -900,13 +977,16 @@
                     
                     <label for="pagamento">FORMA DE PAGAMENTO:</label>
                     <select id="pagamento" name="pagamento" required>
+                        <option value="Pix">Pix</option>
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="Cartão">Cartão</option>
-                        <option value="Pix">Pix</option>
                     </select>
-                    
-                    <button type="button" onclick="editarPedido()">EDITAR PEDIDO</button>
-                    <button type="button" onclick="fecharPopup()">CONTINUAR COMPRANDO</button> 
+
+                    <div class="form-buttons-row">
+                        <button type="button" onclick="fecharPopup()">CONTINUAR COMPRANDO</button> 
+                        <button type="button" onclick="editarPedido()">EDITAR PEDIDO</button>
+                    </div>
+
                     <button type="button" onclick="confirmarPedido()">CONFIRMAR PEDIDO</button>
                 </form>
             </div>
@@ -932,7 +1012,7 @@
         <div id="popup-natal-conteudo">
             <span class="fechar" onclick="fecharPopupNatal()">&times;</span>
             <h2>PRIMEIRO ANIVERSÁRIO DA FAVU! 🎂</h2>
-            <p>O natal está chegando e com ele o primeiro aniversário da FAVU Cozinha Afetiva.</p>
+            <p>O natal está chegando e com ele o primeiro aniversário&nbsp;da&nbsp;FAVU&nbsp;Cozinha&nbsp;Afetiva.</p>
             <p>Por isso temos um presente pra você!</p>
             
             <ul>
@@ -1090,9 +1170,9 @@
         const itensCookies = addGroupKeys([
             // MIN: 20 para o Mini Cookie, conforme solicitado. O ID gerado será 'mini-cookie'
             { nome: "Mini Cookie", min: 20, preco: 2.80, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
-            { nome: "Cookie Tradicional", min: 1, preco: 12.00, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
-            { nome: "Cookie Red Velvet", min: 1, preco: 12.00, descricaoResumo: "Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
-            { nome: "Cookie Black", min: 1, preco: 12.00, descricaoResumo: "Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
+            { nome: "*Cookie Tradicional", min: 1, preco: 12.00, descricaoResumo: "*Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
+            { nome: "*Cookie Red Velvet", min: 1, preco: 12.00, descricaoResumo: "*Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
+            { nome: "*Cookie Black", min: 1, preco: 12.00, descricaoResumo: "*Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
         ]).map(item => ({...item, id: generateId(item.nome)}));
 
         const itensSalgadoFrito = addGroupKeys([
@@ -1211,11 +1291,14 @@
         }
         
         // -----------------------------------------------------
-        // FUNÇÃO DE CRIAÇÃO DE TABELAS - MANTIDA
+        // FUNÇÃO DE CRIAÇÃO DE TABELAS - MANTIDA (com ajuste para Cookies)
         // -----------------------------------------------------
         function criarTabelaGrupo(grupo, idTabela, nomeGrupo) {
-            const tbody = document.getElementById(idTabela).querySelector('tbody');
-            if (!tbody) return;
+            const tabelaBase = document.getElementById(idTabela);
+            if (!tabelaBase) return;
+
+            const tbodyBase = tabelaBase.querySelector('tbody');
+            if (!tbodyBase) return;
 
             let grupoAtual = null;
             let countGrupo = 0;
@@ -1229,10 +1312,11 @@
                 const item = grupo[i];
                 const tr = document.createElement("tr");
                 
-                // Em Cookies, a coluna 2 é o preço. Nas outras, é o tamanho/mínimo.
-                const coluna2 = isCookieTable ? item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (item.tamanho || item.min); 
+                // Em Cookies, a coluna 2 é o mínimo (quando existir). Nas outras, é o tamanho/mínimo.
+                const coluna2 = isCookieTable ? (item.min || '') : (item.tamanho || item.min); 
                 const precoFormatado = item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 const itemId = item.id;
+                const isMiniCookieRow = itemId === MINI_COOKIE_ID;
                 
                 tr.id = itemId; 
                 
@@ -1271,20 +1355,39 @@
                 let celulasComuns;
 
                 if (isCookieTable) {
-                    // CÓDIGO PARA COOKIES (3 COLUNAS VISÍVEIS)
-                    celulasComuns = `
-                        <td>
-                            <div class="item-nome">${item.nome}</div>
-                            ${item.descricao ? `<div class="descricao">${item.descricao}</div>` : ''}
-                        </td>
-                        <td>R$ ${precoFormatado}</td>
-                        <td>
-                            <div class="quantidade-container">
-                                ${inputHtml}
-                                ${erroHtml}
-                            </div>
-                        </td>
-                        `;
+                    // Mini Cookie vai para a tabela específica com QNT. MÍN.; os demais para a tabela de cookies tradicionais
+                    if (isMiniCookieRow) {
+                        // 4 colunas: ITEM | QNT. MÍN. | UNID. | QUANTIDADE
+                        celulasComuns = `
+                            <td>
+                                <div class="item-nome">${item.nome}</div>
+                                ${item.descricao ? `<div class="descricao">${item.descricao}</div>` : ''}
+                            </td>
+                            <td>${item.min || ''}</td>
+                            <td>R$ ${precoFormatado}</td>
+                            <td>
+                                <div class="quantidade-container">
+                                    ${inputHtml}
+                                    ${erroHtml}
+                                </div>
+                            </td>
+                            `;
+                    } else {
+                        // 3 colunas: ITEM | UNID. | QUANTIDADE
+                        celulasComuns = `
+                            <td>
+                                <div class="item-nome">${item.nome}</div>
+                                ${item.descricao ? `<div class="descricao">${item.descricao}</div>` : ''}
+                            </td>
+                            <td>R$ ${precoFormatado}</td>
+                            <td>
+                                <div class="quantidade-container">
+                                    ${inputHtml}
+                                    ${erroHtml}
+                                </div>
+                            </td>
+                            `;
+                    }
                 } else {
                     // CÓDIGO PARA DOCES, SALGADOS FRITOS, FORNO, VEGETARIANOS (4 COLUNAS VISÍVEIS)
                     celulasComuns = `
@@ -1328,8 +1431,23 @@
                 } else {
                     tr.innerHTML = celulasComuns;
                 }
-                
-                tbody.appendChild(tr);
+
+                // Para a tabela de Cookies, decide em qual tbody inserir (mini ou tradicionais)
+                if (isCookieTable) {
+                    const tabelaMini = document.getElementById('tabela-cookies-mini');
+                    const tabelaNormais = document.getElementById('tabela-cookies');
+                    const tbodyMini = tabelaMini ? tabelaMini.querySelector('tbody') : null;
+                    const tbodyNormais = tabelaNormais ? tabelaNormais.querySelector('tbody') : null;
+
+                    if (isMiniCookieRow && tbodyMini) {
+                        tbodyMini.appendChild(tr);
+                    } else if (!isMiniCookieRow && tbodyNormais) {
+                        // Insere diretamente nas linhas de cookies tradicionais, sem espaço extra
+                        tbodyNormais.appendChild(tr);
+                    }
+                } else {
+                    tbodyBase.appendChild(tr);
+                }
             }
         }
         
@@ -1434,10 +1552,21 @@
                 }
 
                 if (cookiesGrupos.includes(grupo)) {
-                    totalCookies += quantidade;
-                    subtotalCookies += quantidade * preco;
-                    if (quantidade > 0) {
-                        hasCookieItem = true;
+                    const isMiniCookie = itemId === MINI_COOKIE_ID;
+
+                    // Mini Cookie tem regra própria de mínimo (20 unidades) e não entra
+                    // na contagem do mínimo geral de 3 para Cookies tradicionais.
+                    if (!isMiniCookie) {
+                        totalCookies += quantidade;
+                        subtotalCookies += quantidade * preco;
+                        if (quantidade > 0) {
+                            hasCookieItem = true;
+                        }
+                    } else {
+                        // Para cupons que aplicam em "cookies" de forma geral,
+                        // ainda queremos considerar o valor dos Mini Cookies no subtotal,
+                        // mas sem contar na quantidade mínima de 3 unidades.
+                        subtotalCookies += quantidade * preco;
                     }
                 }
             });
@@ -1684,6 +1813,23 @@
                 }
             }
         }
+
+        /**
+         * Altera a quantidade a partir dos botões + e - no pop-up de resumo.
+         * @param {string} itemId 
+         * @param {number} delta  +1 ou -1
+         */
+        function alterarQuantidadeResumo(itemId, delta) {
+            const inputResumo = document.querySelector(`#popup-resumo-itens input[data-item-id="${itemId}"]`);
+            if (!inputResumo) return;
+
+            let valorAtual = parseInt(inputResumo.value) || 0;
+            let novoValor = valorAtual + delta;
+            if (novoValor < 0) novoValor = 0;
+
+            inputResumo.value = novoValor;
+            atualizarQuantidadeDireta(inputResumo);
+        }
         
         // -----------------------------------------------------
         // FUNÇÃO DE ATUALIZAÇÃO DO TOTAL - MANTIDA
@@ -1758,13 +1904,38 @@
                 
                 let grupoValido = true;
                 
-                // Validação MÍNIMO POR GRUPO (ex: Cookies: minTotal=3)
-                if (minTotal > 0 && infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
-                    grupoValido = false;
-                    temErroDeMinimo = true;
-                    if (erroCategoriaElemento) {
-                        erroCategoriaElemento.textContent = `Mínimo de ${minTotal} unidades na categoria ${grupo}.`;
-                        erroCategoriaElemento.style.display = 'block';
+                // Validação MÍNIMO POR GRUPO
+                // Para Cookies, o mínimo de 3 deve considerar apenas os cookies "normais"
+                // (Tradicional, Red Velvet e Black), ignorando o Mini Cookie, que tem mínimo próprio.
+                if (minTotal > 0) {
+                    if (isCookieGroup) {
+                        let totalCookiesNormais = 0;
+                        infoGrupo.items.forEach(item => {
+                            const isMiniCookie = item.itemId === MINI_COOKIE_ID;
+                            if (!isMiniCookie) {
+                                totalCookiesNormais += item.quantidade;
+                            }
+                        });
+
+                        if (totalCookiesNormais > 0 && totalCookiesNormais < minTotal) {
+                            grupoValido = false;
+                            temErroDeMinimo = true;
+                            if (erroCategoriaElemento) {
+                                erroCategoriaElemento.textContent = `Os cookies Tradicional, Red Velvet e Black possuem quantidade mínima de ${minTotal} unidades no total.`;
+                                erroCategoriaElemento.style.display = 'block';
+                            }
+                        } else {
+                            if (erroCategoriaElemento) erroCategoriaElemento.style.display = 'none';
+                        }
+                    } else if (infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
+                        grupoValido = false;
+                        temErroDeMinimo = true;
+                        if (erroCategoriaElemento) {
+                            erroCategoriaElemento.textContent = `Mínimo de ${minTotal} unidades na categoria ${grupo}.`;
+                            erroCategoriaElemento.style.display = 'block';
+                        }
+                    } else {
+                        if (erroCategoriaElemento) erroCategoriaElemento.style.display = 'none';
                     }
                 } else {
                     if (erroCategoriaElemento) erroCategoriaElemento.style.display = 'none';
@@ -1793,15 +1964,16 @@
                             shouldIncludeInTotal = false; // Marca erro se falhar no min de grupo
                         }
                         
+                        // Se for válido para o total, soma no pedido
                         if (shouldIncludeInTotal) {
                             const totalItem = item.quantidade * item.preco;
                             totalBruto += totalItem;
                             totalItens += item.quantidade;
-                        }
 
-                        // Inclui no resumo (pop-up) se a quantidade for > 0
-                        if (!gruposResumo[grupo]) gruposResumo[grupo] = [];
-                        gruposResumo[grupo].push({ ...item });
+                            // E só entra no resumo se estiver sendo considerado no total
+                            if (!gruposResumo[grupo]) gruposResumo[grupo] = [];
+                            gruposResumo[grupo].push({ ...item });
+                        }
                     }
                 });
             }
@@ -1824,20 +1996,21 @@
                     const precoTotalItem = item.quantidade * item.preco;
                     let precoExibicao = `R$ ${precoTotalItem.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     
-                    // Geração do item com campo de edição direta
-                    resumoItensPopup.innerHTML += `
+                        // Geração do item com botões + e - e campo de edição direta
+                        resumoItensPopup.innerHTML += `
                         <div class="resumo-item-line">
                             <div class="resumo-item-name">
                                 ${item.descricaoResumo} 
                                 <small>${precoExibicao}</small>
                             </div>
                             <div class="resumo-item-input-group">
+                                <button type="button" class="resumo-qtd-btn" onclick="alterarQuantidadeResumo('${item.itemId}', -1)">-</button>
                                 <input type="number" 
-                                                    min="0" 
-                                                    value="${item.quantidade}" 
-                                                    data-item-id="${item.itemId}" 
-                                                    onblur="atualizarQuantidadeDireta(this)">
-                                un.
+                                       min="0" 
+                                       value="${item.quantidade}" 
+                                       data-item-id="${item.itemId}" 
+                                       oninput="atualizarQuantidadeDireta(this)">
+                                <button type="button" class="resumo-qtd-btn" onclick="alterarQuantidadeResumo('${item.itemId}', 1)">+</button>
                             </div>
                             <div class="resumo-item-actions">
                                 <button class="btn-excluir" onclick="excluirItem('${item.itemId}')">EXCLUIR</button>
@@ -1949,10 +2122,10 @@
         }
 
         function confirmarPedido() {
-            // Linha riscada para separar o resumo dos itens das informações do cliente
-            const linhaSeparadora = "\n\n*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\n\n";
+            // Linha riscada para separar blocos no WhatsApp
+            const linhaSeparadora = "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
 
-            let resumoWhatsapp = "Olá, Favu!\nGostaria de saber a disponibilidade para encomendar os itens abaixo:\n\n\n*_- Resumo do pedido_:*\n\n";
+            let resumoWhatsapp = "Olá, Favu!\nGostaria de saber a disponibilidade para encomendar os itens abaixo:\n\n\n_*- Resumo do pedido:*_\n\n";
             let totalPedido = 0; // Será preenchido com o total Bruto (sem desconto)
             let temErroDeMinimo = false;
 
@@ -1981,11 +2154,30 @@
                 const infoGrupo = totaisPorGrupo[grupo];
                 const idTabela = `tabela-${grupo.toLowerCase().replace(/\s/g, '-')}`;
                 const minTotal = gruposItens[idTabela]?.minTotal || 0;
+                const isCookieGroup = grupo === "Cookies";
                 
                 let grupoValido = true;
-                if (minTotal > 0 && infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
-                    grupoValido = false;
-                    temErroDeMinimo = true;
+
+                // Para Cookies, o mínimo de 3 deve considerar apenas os cookies "normais"
+                // (Tradicional, Red Velvet e Black), ignorando o Mini Cookie, que tem mínimo próprio.
+                if (minTotal > 0) {
+                    if (isCookieGroup) {
+                        let totalCookiesNormais = 0;
+                        infoGrupo.items.forEach(item => {
+                            const isMiniCookie = item.itemId === MINI_COOKIE_ID;
+                            if (!isMiniCookie) {
+                                totalCookiesNormais += item.quantidade;
+                            }
+                        });
+
+                        if (totalCookiesNormais > 0 && totalCookiesNormais < minTotal) {
+                            grupoValido = false;
+                            temErroDeMinimo = true;
+                        }
+                    } else if (infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
+                        grupoValido = false;
+                        temErroDeMinimo = true;
+                    }
                 }
 
                 infoGrupo.items.forEach(item => {
@@ -2039,26 +2231,36 @@
             const desconto = cupomAplicado.desconto;
             const totalLiquido = totalPedido - desconto;
 
+            // Bloco de itens por grupo, no formato solicitado
             for (const grupo in gruposResumo) {
-                resumoWhatsapp += `*${grupo}:*\n`;
+                resumoWhatsapp += `* ⤷${grupo}:*\n`;
                 gruposResumo[grupo].forEach(item => {
-                    resumoWhatsapp += `${item.descricao} - ${item.quantidade} unidades\n`;
+                    const precoUnitario = item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const totalItem = (item.quantidade * item.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    resumoWhatsapp += `${item.descricao} - ${item.quantidade} unidades (R$ ${precoUnitario} cada) = R$ ${totalItem}\n`;
                 });
                 resumoWhatsapp += `\n`; 
             }
-            
+
+            // Linha separadora e totais
+            resumoWhatsapp += linhaSeparadora;
+            resumoWhatsapp += `Total do pedido: R$ ${totalPedido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n`;
+
             if (desconto > 0) {
-                 resumoWhatsapp += `*Desconto Cupom (${cupomAplicado.codigo})*: R$ ${desconto.toFixed(2).replace('.', ',')}\n`;
+                 resumoWhatsapp += `Cupom: - R$ ${desconto.toFixed(2).replace('.', ',')} (${cupomAplicado.codigo})\n\n`;
+            } else {
+                 resumoWhatsapp += `Cupom: - R$ 0,00\n\n`;
             }
 
-            resumoWhatsapp += `*_Total Final_*: R$ ${totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            resumoWhatsapp += `*Total Final: R$ ${totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*\n\n`;
 
             const nome = document.getElementById("nome").value;
+            const telefone = document.getElementById("telefone").value;
             const data = document.getElementById("data").value;
             const horario = document.getElementById("horario").value;
             const pagamento = document.getElementById("pagamento").value;
 
-            if (!nome || !data || !horario || !pagamento) {
+            if (!nome || !telefone || !data || !horario || !pagamento) {
                 alert("Por gentileza, preencha todos os campos!");
                 return;
             }
@@ -2066,10 +2268,10 @@
             const dataParts = data.split("-");
             const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
 
-            // INCLUI A NOVA LINHA SEPARADORA AQUI
+            // INCLUI A NOVA LINHA SEPARADORA E AS INFORMAÇÕES DO PEDIDO
             resumoWhatsapp += linhaSeparadora;
             
-            resumoWhatsapp += `_*- Informações do Pedido:*_\n\n*Nome*: ${nome}\n*Data da entrega*: ${dataFormatada}\n*Horário da entrega*: ${horario}\n*Forma de pagamento*: ${pagamento}`;
+            resumoWhatsapp += `*- Informações do Pedido:*\n\n*Nome:* ${nome}\n*Número:* ${telefone}\n\n*Data da entrega:* ${dataFormatada}\n*Horário da entrega:* ${horario}\n*Forma de pagamento:* ${pagamento}`;
 
             const whatsappLink = `https://wa.me/558195256641?text=${encodeURIComponent(resumoWhatsapp)}`;
             window.open(whatsappLink, '_blank');
@@ -2088,11 +2290,15 @@
         // -----------------------------------------------------
 
         /**
-         * Exibe o popup de Natal sempre.
+         * Exibe o popup de Natal apenas até 20/12/2025 (23h59).
          */
         function abrirPopupNatal() {
-            // REMOVEMOS A CHECAGEM DE sessionStorage. O POPUP SERÁ SEMPRE EXIBIDO.
-            document.getElementById('popup-natal').style.display = 'flex';
+            const hojeISO = new Date().toISOString().split('T')[0]; // formato YYYY-MM-DD
+            const limiteISO = '2025-12-20';
+
+            if (hojeISO <= limiteISO) {
+                document.getElementById('popup-natal').style.display = 'flex';
+            }
         }
 
         /**
@@ -2206,5 +2412,3 @@
     
 </body>
 </html>
-
-
