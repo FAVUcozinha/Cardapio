@@ -251,7 +251,7 @@
 
         /* NOVO ESTILO: Erro de mínimo na CATEGORIA (ex: Cookies) */
         .erro-categoria {
-            color: #FFD966; /* amarelo suave para destacar o mínimo - mesmo tom de .erro-item-unico */
+            color: #ffffff; 
             font-size: 14px; 
             margin-top: 10px; 
             font-weight: bold;
@@ -921,7 +921,7 @@
         <div id="popup-resumo" class="popup">
             <div class="popup-conteudo">
                 <span class="fechar" onclick="fecharResumoPopup()">&times;</span>
-                <h2>RESUMO DO PEDIDO</h2>
+                <h2>INFORMAÇÕES DO PEDIDO</h2>
                 
                 <div id="popup-resumo-itens" class="resumo-itens"></div>
                 
@@ -968,7 +968,7 @@
                         <button type="button" onclick="editarPedido()">EDITAR PEDIDO</button>
                     </div>
 
-                    <button type="button" onclick="confirmarPedido()">REALIZAR PEDIDO</button>
+                    <button type="button" onclick="confirmarPedido()">CONFIRMAR PEDIDO</button>
                 </form>
             </div>
         </div>
@@ -1923,7 +1923,8 @@
             const gruposResumo = {}; 
             const totaisPorGrupo = {};
 
-            // Primeiro loop: Coleta dados e exibe avisos visuais
+            // Lista de grupos que usam a validação de mínimo individual
+            
             document.querySelectorAll(".quantidade-input").forEach(input => {
                 const quantidade = parseInt(input.value) || 0;
                 const min = parseInt(input.getAttribute("data-min")) || 1;
@@ -1933,16 +1934,25 @@
                 const itemId = input.getAttribute("data-item-id");
                 
                 const erroElemento = input.closest('.quantidade-container').querySelector('.erro-item-unico');
+                const idTabela = `tabela-${grupo.toLowerCase().replace(/\s/g, '-')}`;
                 
                 // Checagem de Mínimo Individual para Doces/Salgados OU Mini Cookie
                 const isMiniCookie = itemId === MINI_COOKIE_ID;
                 const isDocesSalgadosCheck = gruposComMinimoIndividual.includes(grupo) && min > 1;
-                const isIndividualMinCheck = isDocesSalgadosCheck || isMiniCookie;
 
-                // Exibe aviso visual se quantidade > 0 mas < mínimo (apenas para itens com mínimo individual)
+                const isIndividualMinCheck = isDocesSalgadosCheck || isMiniCookie; 
+
+                // 1. Soma a quantidade no total do grupo
+                if (!totaisPorGrupo[grupo]) {
+                    totaisPorGrupo[grupo] = { quantidade: 0, items: [] };
+                }
+                totaisPorGrupo[grupo].quantidade += quantidade;
+                totaisPorGrupo[grupo].items.push({ input, quantidade, min, preco, descricaoResumo, itemId, grupo });
+
+                // 2. Validação MÍNIMO INDIVIDUAL (Apenas exibe o erro visual na tabela principal)
                 if (isIndividualMinCheck && quantidade > 0) {
                     if (quantidade < min) {
-                        // EXIBE MENSAGEM DE ERRO VISUAL
+                        // EXIBE MENSAGEM DE ERRO
                         if (erroElemento) {
                             erroElemento.textContent = `Mín ${min} Unid.`;
                             erroElemento.style.display = 'block';
@@ -1955,16 +1965,11 @@
                     // Oculta a mensagem se a quantidade for 0 ou não for para checar individualmente
                     if (erroElemento) erroElemento.style.display = 'none'; 
                 }
-
-                // Coleta dados para processamento posterior
-                if (!totaisPorGrupo[grupo]) {
-                    totaisPorGrupo[grupo] = { quantidade: 0, items: [] };
-                }
-                totaisPorGrupo[grupo].quantidade += quantidade;
-                totaisPorGrupo[grupo].items.push({ input, quantidade, min, preco, descricaoResumo, itemId, grupo });
             });
 
-            // Segundo loop: Processa totais e cria resumo (apenas itens válidos)
+            let temErroDeMinimo = false;
+
+            // 3. Processa os totais e cria o resumo para o pop-up
             for (const grupo in totaisPorGrupo) {
                 const infoGrupo = totaisPorGrupo[grupo];
                 const idTabela = `tabela-${grupo.toLowerCase().replace(/\s/g, '-')}`;
@@ -1972,12 +1977,13 @@
                 const isCookieGroup = grupo === "Cookies";
                 const erroCategoriaElemento = isCookieGroup ? document.getElementById('erro-cookies') : null;
                 
-                // Verifica se o grupo atinge o mínimo (para Cookies ou outros grupos com minTotal)
-                let grupoAtingiuMinimo = true;
+                let grupoValido = true;
                 
+                // Validação MÍNIMO POR GRUPO
+                // Para Cookies, o mínimo de 3 deve considerar apenas os cookies "normais"
+                // (Tradicional, Red Velvet e Black), ignorando o Mini Cookie, que tem mínimo próprio.
                 if (minTotal > 0) {
                     if (isCookieGroup) {
-                        // Para Cookies, calcula apenas cookies normais (excluindo Mini Cookie)
                         let totalCookiesNormais = 0;
                         infoGrupo.items.forEach(item => {
                             const isMiniCookie = item.itemId === MINI_COOKIE_ID;
@@ -1985,10 +1991,10 @@
                                 totalCookiesNormais += item.quantidade;
                             }
                         });
-                        
+
                         if (totalCookiesNormais > 0 && totalCookiesNormais < minTotal) {
-                            grupoAtingiuMinimo = false;
-                            // Exibe aviso visual, mas não bloqueia
+                            grupoValido = false;
+                            temErroDeMinimo = true;
                             if (erroCategoriaElemento) {
                                 erroCategoriaElemento.textContent = `Os cookies Tradicional, Red Velvet e Black possuem quantidade mínima de ${minTotal} unidades no total.`;
                                 erroCategoriaElemento.style.display = 'block';
@@ -1997,8 +2003,8 @@
                             if (erroCategoriaElemento) erroCategoriaElemento.style.display = 'none';
                         }
                     } else if (infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
-                        grupoAtingiuMinimo = false;
-                        // Exibe aviso visual, mas não bloqueia
+                        grupoValido = false;
+                        temErroDeMinimo = true;
                         if (erroCategoriaElemento) {
                             erroCategoriaElemento.textContent = `Mínimo de ${minTotal} unidades na categoria ${grupo}.`;
                             erroCategoriaElemento.style.display = 'block';
@@ -2010,37 +2016,39 @@
                     if (erroCategoriaElemento) erroCategoriaElemento.style.display = 'none';
                 }
 
-                // Processa itens válidos do grupo
+                // Adiciona itens válidos ao subtotal
                 infoGrupo.items.forEach(item => {
                     // Checagem de Mínimo Individual para Doces/Salgados OU Mini Cookie
                     const isMiniCookie = item.itemId === MINI_COOKIE_ID;
                     const isDocesSalgadosCheck = gruposComMinimoIndividual.includes(grupo) && item.min > 1;
+
                     const isIndividualMinCheck = isDocesSalgadosCheck || isMiniCookie;
-                    
-                    // LÓGICA SIMPLIFICADA: quantidade >= min = válido
                     const isItemValido = item.quantidade >= item.min;
                     
                     if (item.quantidade > 0) {
-                        // Se o item tem mínimo individual e não atingiu, ignora silenciosamente
-                        if (isIndividualMinCheck && !isItemValido) {
-                            // Item inválido: apenas mostra aviso na tabela, não soma nada
-                            return; // Continua para próximo item
+                        let shouldIncludeInTotal = true;
+                        
+                        // Checa o erro individual (Mini Cookie ou Doces/Salgados)
+                        if (isIndividualMinCheck && !isItemValido) {  
+                            shouldIncludeInTotal = false;
+                            temErroDeMinimo = true; // Marca erro se falhar no min individual
                         }
                         
-                        // Se o grupo tem mínimo e não atingiu, ignora todo o grupo silenciosamente
-                        if (minTotal > 0 && !grupoAtingiuMinimo) {
-                            // Grupo inválido: ignora todos os itens deste grupo
-                            return; // Continua para próximo item
+                        // Checa o erro de grupo para Cookies (ou outros grupos com minTotal > 0)
+                        if (minTotal > 0 && !grupoValido) {
+                            shouldIncludeInTotal = false; // Marca erro se falhar no min de grupo
                         }
                         
-                        // ITEM VÁLIDO: Soma ao total e entra no resumo
-                        const totalItem = item.quantidade * item.preco;
-                        totalBruto += totalItem;
-                        totalItens += item.quantidade;
+                        // Se for válido para o total, soma no pedido
+                        if (shouldIncludeInTotal) {
+                            const totalItem = item.quantidade * item.preco;
+                            totalBruto += totalItem;
+                            totalItens += item.quantidade;
 
-                        // Adiciona ao resumo
-                        if (!gruposResumo[grupo]) gruposResumo[grupo] = [];
-                        gruposResumo[grupo].push({ ...item });
+                            // E só entra no resumo se estiver sendo considerado no total
+                            if (!gruposResumo[grupo]) gruposResumo[grupo] = [];
+                            gruposResumo[grupo].push({ ...item });
+                        }
                     }
                 });
             }
@@ -2063,8 +2071,8 @@
                     const precoTotalItem = item.quantidade * item.preco;
                     let precoExibicao = `R$ ${precoTotalItem.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     
-                    // Geração do item com botões + e - e campo de edição direta
-                    resumoItensPopup.innerHTML += `
+                        // Geração do item com botões + e - e campo de edição direta
+                        resumoItensPopup.innerHTML += `
                         <div class="resumo-item-line">
                             <div class="resumo-item-name">
                                 ${item.descricaoResumo} 
@@ -2104,9 +2112,9 @@
                       }
             }
 
-            // 3. Controla a visibilidade do botão "FAZER PEDIDO" no pop-up
-            // O botão aparece SEMPRE que houver itens válidos (totalBruto > 0), sem outras condições
-            if (totalBruto > 0) {
+            // 3. Controla a visibilidade do botão "FAZER PEDIDO" no pop-up (usa o estilo padrão definido em <button>)
+            if (totalBruto > 0 && !temErroDeMinimo) {
+                 // Certifica que o botão FAZER PEDIDO tenha o estilo principal
                  fazerPedidoContainer.innerHTML = '<button onclick="abrirPopup()">FAZER PEDIDO</button>';
             } else {
                  fazerPedidoContainer.innerHTML = '';
@@ -2197,11 +2205,14 @@
 
             let resumoWhatsapp = "Olá, Favu!\nGostaria de saber a disponibilidade para encomendar os itens abaixo:\n\nID do Pedido: " + idPedido + "\n\n" + linhaSeparadora + "\n- Resumo do pedido:\n\n";
             let totalPedido = 0; // Será preenchido com o total Bruto (sem desconto)
+            let temErroDeMinimo = false;
 
             const gruposResumo = {}; 
             const totaisPorGrupo = {};
 
-            // 1. Coleta dados dos itens
+            
+            // 1. Preenche totaisPorGrupo (lógica repetida de atualizarTotal para validação e resumo)
+            let temItensNoPedido = false; // Flag para verificar se há itens no pedido
             document.querySelectorAll(".quantidade-input").forEach(input => {
                 const quantidade = parseInt(input.value) || 0;
                 const min = parseInt(input.getAttribute("data-min")) || 1;
@@ -2210,6 +2221,10 @@
                 const grupo = input.getAttribute("data-grupo");
                 const itemId = input.getAttribute("data-item-id");
                 
+                if (quantidade > 0) {
+                    temItensNoPedido = true; // Marca que há itens no pedido
+                }
+                
                 if (!totaisPorGrupo[grupo]) {
                     totaisPorGrupo[grupo] = { quantidade: 0, items: [] };
                 }
@@ -2217,34 +2232,26 @@
                 totaisPorGrupo[grupo].items.push({ quantidade, min, preco, descricaoResumo, grupo, itemId });
             });
 
-            // Verifica se o pedido está vazio
-            let temItensNoPedido = false;
-            for (const grupo in totaisPorGrupo) {
-                if (totaisPorGrupo[grupo].quantidade > 0) {
-                    temItensNoPedido = true;
-                    break;
-                }
-            }
-
+            // Verifica se o pedido está realmente vazio (sem nenhum item)
             if (!temItensNoPedido) {
                 alert("Seu pedido está vazio. Adicione itens para confirmar.");
                 fecharPopup();
                 return;
             }
 
-            // 2. Processa apenas itens válidos (mesma lógica de atualizarTotal)
+            // 2. Valida e Calcula o Total Bruto para o WhatsApp
             for (const grupo in totaisPorGrupo) {
                 const infoGrupo = totaisPorGrupo[grupo];
                 const idTabela = `tabela-${grupo.toLowerCase().replace(/\s/g, '-')}`;
                 const minTotal = gruposItens[idTabela]?.minTotal || 0;
                 const isCookieGroup = grupo === "Cookies";
                 
-                // Verifica se o grupo atinge o mínimo
-                let grupoAtingiuMinimo = true;
-                
+                let grupoValido = true;
+
+                // Para Cookies, o mínimo de 3 deve considerar apenas os cookies "normais"
+                // (Tradicional, Red Velvet e Black), ignorando o Mini Cookie, que tem mínimo próprio.
                 if (minTotal > 0) {
                     if (isCookieGroup) {
-                        // Para Cookies, calcula apenas cookies normais (excluindo Mini Cookie)
                         let totalCookiesNormais = 0;
                         infoGrupo.items.forEach(item => {
                             const isMiniCookie = item.itemId === MINI_COOKIE_ID;
@@ -2252,39 +2259,38 @@
                                 totalCookiesNormais += item.quantidade;
                             }
                         });
-                        
+
                         if (totalCookiesNormais > 0 && totalCookiesNormais < minTotal) {
-                            grupoAtingiuMinimo = false;
-                            // Ignora o grupo silenciosamente
+                            grupoValido = false;
+                            temErroDeMinimo = true;
                         }
                     } else if (infoGrupo.quantidade > 0 && infoGrupo.quantidade < minTotal) {
-                        grupoAtingiuMinimo = false;
-                        // Ignora o grupo silenciosamente
+                        grupoValido = false;
+                        temErroDeMinimo = true;
                     }
                 }
 
-                // Processa apenas itens válidos do grupo
                 infoGrupo.items.forEach(item => {
                     // Checagem de Mínimo Individual para Doces/Salgados OU Mini Cookie
                     const isMiniCookie = item.itemId === MINI_COOKIE_ID;
                     const isDocesSalgadosCheck = gruposComMinimoIndividual.includes(grupo) && item.min > 1;
+
                     const isIndividualMinCheck = isDocesSalgadosCheck || isMiniCookie;
-                    
-                    // LÓGICA SIMPLIFICADA: quantidade >= min = válido
                     const isItemValido = item.quantidade >= item.min;
-                    
-                    if (item.quantidade > 0) {
-                        // Se o item tem mínimo individual e não atingiu, ignora silenciosamente
-                        if (isIndividualMinCheck && !isItemValido) {
-                            return; // Continua para próximo item
-                        }
-                        
-                        // Se o grupo tem mínimo e não atingiu, ignora todo o grupo silenciosamente
-                        if (minTotal > 0 && !grupoAtingiuMinimo) {
-                            return; // Continua para próximo item
-                        }
-                        
-                        // ITEM VÁLIDO: Soma ao total e adiciona ao resumo
+
+                    let shouldIncludeInTotal = true;
+
+                    // Checagem Individual
+                    if (item.quantidade > 0 && isIndividualMinCheck && !isItemValido) {  
+                                                shouldIncludeInTotal = false;
+                                                temErroDeMinimo = true;
+                    }
+                    // Checagem de Grupo
+                    if (minTotal > 0 && !grupoValido) {
+                        shouldIncludeInTotal = false;
+                    }
+
+                    if (item.quantidade > 0 && shouldIncludeInTotal) {
                         const totalItem = item.quantidade * item.preco;
                         totalPedido += totalItem;
 
@@ -2297,12 +2303,19 @@
                 });
             }
             
-            // Verifica se há itens válidos no pedido
-            if (totalPedido === 0) {
-                alert("Seu pedido está vazio. Adicione itens válidos para confirmar.");
-                fecharPopup();
-                return;
+            // ************ VALIDAÇÃO DE BLOQUEIO ************
+            // Se totalPedido é 0 mas há itens no pedido, significa que não atingiram os mínimos
+            if (totalPedido === 0 && temItensNoPedido) {
+                temErroDeMinimo = true; // Força a mensagem de erro de mínimo
             }
+
+            if (temErroDeMinimo) {
+                 alert("Por favor, ajuste as quantidades mínimas do seu pedido antes de confirmar.");
+                 atualizarTotal(); // Recarrega os totais e erros
+                 abrirResumoPopup();
+                 return;
+            }
+            // ************ FIM DA VALIDAÇÃO DE BLOQUEIO ************
 
             // Aplica desconto para o resumo do WhatsApp
             const desconto = cupomAplicado.desconto;
@@ -2522,4 +2535,3 @@
     
 </body>
 </html>
-
