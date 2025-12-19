@@ -268,11 +268,7 @@
         }
 
         .cookies-regra-texto {
-            font-size: 0.9em;
-            opacity: 0.9;
-            text-align: center;
-            margin-top: 24px;   /* espaço equivalente a ~2 linhas acima do texto */
-            margin-bottom: 8px; /* pequeno respiro antes da segunda tabela */
+            display: none;
         }
 
         /* ---------------------------------------------------------------------- */
@@ -853,19 +849,7 @@
             <img src="cookies.png" alt="Cookies" id="img-cookies"> 
             <div id="erro-cookies" class="erro-categoria">Mínimo de 3 unidades na categoria Cookies.</div> 
 
-            <!-- Tabela 1: Mini Cookies (com QNT. MÍN.) -->
-            <table id="tabela-cookies-mini">
-                <caption>Mini Cookies</caption>
-                <tr>
-                    <th>ITEM</th>
-                    <th>QNT. MÍN.</th>
-                    <th>UNID.</th>
-                    <th>QUANTIDADE</th>
-                </tr>
-                <tbody></tbody>
-            </table>
-
-            <!-- Tabela 2: Cookies Tradicional / Red Velvet / Black (sem QNT. MÍN.) -->
+            <!-- Tabela de Cookies Tradicional / Red Velvet / Black (sem QNT. MÍN.) -->
             <table id="tabela-cookies">
                 <caption>Cookies Tradicionais</caption>
                 <tr>
@@ -876,10 +860,7 @@
                 <tbody></tbody>
             </table>
 
-            <!-- Texto de regra dos cookies tradicionais (abaixo da segunda tabela) -->
-            <div class="cookies-regra-texto">
-                * Pedido mínimo de 3 cookies, podendo ser de qualquer sabor (Tradicional, Black ou Red Velvet) *
-            </div>
+            <!-- Texto de regra dos cookies tradicionais removido a pedido do cliente -->
         </div>
 
         <div class="categoria-group" id="grupo-salfri">
@@ -1160,6 +1141,9 @@
             { nome: "Beijinho", min: 20, preco: 1.20, descricaoResumo: "Beijinho", descricao: "" },
             { nome: "Bem-casado", min: 20, preco: 1.20, descricaoResumo: "Bem-casado", descricao: "" },
             { nome: "Brigadeiro", min: 20, preco: 1.20, descricaoResumo: "Brigadeiro", descricao: "" },
+            { nome: "Mini Cookie Black", min: 20, preco: 2.80, descricaoResumo: "Mini Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
+            { nome: "Mini Cookie Red Velvet", min: 20, preco: 2.80, descricaoResumo: "Mini Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
+            { nome: "Mini Cookie Tradicional", min: 20, preco: 2.80, descricaoResumo: "Mini Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
             { nome: "Mini Tortilete", min: 20, preco: 1.30, descricaoResumo: "Mini Tortilete", descricao: "" },
             { nome: "Moranguinho", min: 20, preco: 1.20, descricaoResumo: "Moranguinho", descricao: "" },
             { nome: "Ouriço", min: 20, preco: 1.30, descricaoResumo: "Ouriço", descricao: "" },
@@ -1168,8 +1152,7 @@
         ]).map(item => ({...item, id: generateId(item.nome)}));
 
         const itensCookies = addGroupKeys([
-            // MIN: 20 para o Mini Cookie, conforme solicitado. O ID gerado será 'mini-cookie'
-            { nome: "Mini Cookie", min: 20, preco: 2.80, descricaoResumo: "Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
+            // Cookies tradicionais (sem Mini Cookie, que foi movido para Doces)
             { nome: "Cookie Tradicional *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Tradicional", descricao: "Massa de baunilha com pedaços de chocolate meio amargo" },
             { nome: "Cookie Red Velvet *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Red Velvet", descricao: "Massa de baunilha com toque de cream cheese, cacau vermelho e pedaços de chocolate branco" },
             { nome: "Cookie Black *", min: 1, preco: 12.00, descricaoResumo: "*Cookie Black", descricao: "Massa feita com cacau 100% e pedaços de chocolate meio amargo" },
@@ -1289,9 +1272,98 @@
                 });
             });
         }
+
+        // -----------------------------------------------------
+        // INTEGRAÇÃO COM GOOGLE SHEETS (ACOMPANHAMENTO DE PEDIDOS)
+        // -----------------------------------------------------
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzHee-uGL6afK5smFq80Gr7HtiJ04zjdF2unc8sXREcLWhxQp0Dx9ntPcmBvR_Jq35p/exec";
+
+        function gerarIdPedido() {
+            const agora = new Date();
+            const data = agora.toISOString().slice(0,10).replace(/-/g, "");
+            const hora = agora.toTimeString().slice(0,8).replace(/:/g, "");
+            return `PED-${data}${hora}`;
+        }
+
+        /**
+         * Valida e formata o número de telefone para WhatsApp
+         * Regras:
+         * - 8 dígitos: adiciona DDI 55 e DDD 81
+         * - 10 dígitos (com DDD): adiciona DDI 55
+         * - 13 dígitos (com DDI e DDD): usa como está
+         * @param {string} telefone - Número de telefone a ser validado
+         * @returns {string} - Número formatado no padrão internacional (55 + DDD + número)
+         */
+        function validarEFormatarTelefone(telefone) {
+            // Remove todos os caracteres não numéricos
+            const numeroLimpo = telefone.replace(/\D/g, '');
+            
+            // Se já tiver DDI e DDD completo (13 dígitos: 55 + 2 dígitos DDD + 9 dígitos)
+            if (numeroLimpo.length === 13) {
+                return numeroLimpo;
+            }
+            
+            // Se tiver 12 dígitos (DDI 55 + DDD + número), retorna como está
+            if (numeroLimpo.length === 12) {
+                return numeroLimpo;
+            }
+            
+            // Se tiver 11 dígitos (DDD + número com 9º dígito), adiciona DDI 55
+            if (numeroLimpo.length === 11) {
+                return '55' + numeroLimpo;
+            }
+            
+            // Se tiver 10 dígitos (DDD + número), adiciona DDI 55
+            if (numeroLimpo.length === 10) {
+                return '55' + numeroLimpo;
+            }
+            
+            // Se tiver 9 dígitos (número com 9º dígito), adiciona DDI 55 e DDD 81
+            if (numeroLimpo.length === 9) {
+                return '5581' + numeroLimpo;
+            }
+            
+            // Se tiver 8 dígitos (número sem 9º dígito), adiciona DDI 55 e DDD 81
+            if (numeroLimpo.length === 8) {
+                return '5581' + numeroLimpo;
+            }
+            
+            // Se não se encaixar em nenhuma regra, retorna o número limpo (pode ser inválido)
+            return numeroLimpo;
+        }
+
+        function enviarPedidoParaPlanilha(dadosPedido) {
+            try {
+                const params = new URLSearchParams();
+                
+                // Adiciona o parâmetro de ação para o script multifunção
+                params.append('action', 'create');
+                
+                // Adiciona todos os campos do pedido
+                for (const key in dadosPedido) {
+                    params.append(key, dadosPedido[key] || '');
+                }
+                
+                fetch(GOOGLE_SHEETS_URL, {
+                    method: "POST",
+                    mode: 'no-cors',
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params.toString()
+                }).then(() => {
+                    console.log("Pedido enviado para a planilha.");
+                }).catch(err => {
+                    console.error("Erro ao enviar para planilha:", err);
+                });
+            } catch (e) {
+                console.error("Erro no preparo do envio:", e);
+            }
+        }
         
         // -----------------------------------------------------
         // FUNÇÃO DE CRIAÇÃO DE TABELAS - MANTIDA (com ajuste para Cookies)
+        // Agora os itens de cada tabela são exibidos em ordem alfabética (por nome).
         // -----------------------------------------------------
         function criarTabelaGrupo(grupo, idTabela, nomeGrupo) {
             const tabelaBase = document.getElementById(idTabela);
@@ -1299,6 +1371,13 @@
 
             const tbodyBase = tabelaBase.querySelector('tbody');
             if (!tbodyBase) return;
+
+            // Cria uma cópia ordenada alfabeticamente por nome
+            const grupoOrdenado = [...grupo].sort((a, b) => {
+                const nomeA = (a.nome || '').toLocaleLowerCase('pt-BR');
+                const nomeB = (b.nome || '').toLocaleLowerCase('pt-BR');
+                return nomeA.localeCompare(nomeB, 'pt-BR');
+            });
 
             let grupoAtual = null;
             let countGrupo = 0;
@@ -1308,8 +1387,8 @@
             const minDoGrupo = gruposItens[idTabela]?.minTotal || 0;
 
 
-            for (let i = 0; i < grupo.length; i++) {
-                const item = grupo[i];
+            for (let i = 0; i < grupoOrdenado.length; i++) {
+                const item = grupoOrdenado[i];
                 const tr = document.createElement("tr");
                 
                 // Em Cookies, a coluna 2 é o mínimo (quando existir). Nas outras, é o tamanho/mínimo.
@@ -1328,13 +1407,13 @@
                         isFirstInGroup = true;
                         countGrupo = 1; // Reseta a contagem para o novo grupo
                         let j = i + 1;
-                        while (j < grupo.length && grupo[j].groupKey === grupoAtual) {
+                        while (j < grupoOrdenado.length && grupoOrdenado[j].groupKey === grupoAtual) {
                             countGrupo++;
                             j++;
                         }
                     }
                     
-                    if (item.groupKey === grupoAtual && i < grupo.length - 1 && grupo[i+1].groupKey === grupoAtual) {
+                    if (item.groupKey === grupoAtual && i < grupoOrdenado.length - 1 && grupoOrdenado[i+1].groupKey === grupoAtual) {
                         tr.classList.add('item-group-active');
                     }
                 }
@@ -1432,17 +1511,12 @@
                     tr.innerHTML = celulasComuns;
                 }
 
-                // Para a tabela de Cookies, decide em qual tbody inserir (mini ou tradicionais)
+                // Para a tabela de Cookies, insere diretamente na tabela de cookies tradicionais
                 if (isCookieTable) {
-                    const tabelaMini = document.getElementById('tabela-cookies-mini');
                     const tabelaNormais = document.getElementById('tabela-cookies');
-                    const tbodyMini = tabelaMini ? tabelaMini.querySelector('tbody') : null;
                     const tbodyNormais = tabelaNormais ? tabelaNormais.querySelector('tbody') : null;
 
-                    if (isMiniCookieRow && tbodyMini) {
-                        tbodyMini.appendChild(tr);
-                    } else if (!isMiniCookieRow && tbodyNormais) {
-                        // Insere diretamente nas linhas de cookies tradicionais, sem espaço extra
+                    if (tbodyNormais) {
                         tbodyNormais.appendChild(tr);
                     }
                 } else {
@@ -1589,6 +1663,18 @@
             const cupomDeUsoUnico = CUPONS_GERADOS[cupomCode];
             if (cupomDeUsoUnico) {
                 
+                // 2.1. VALIDAÇÃO IMEDIATA DE COOKIES (ANTES DE TUDO)
+                if (cupomDeUsoUnico.aplicaEm === 'cookies') {
+                    const minCookies = cupomDeUsoUnico.minCookies || 1;
+                    if (totalCookies < minCookies) {
+                        cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookies} COOKIES.`;
+                        cupomMessage.classList.add('cupom-error');
+                        cupomMessage.textContent = cupomAplicado.mensagem;
+                        atualizarTotal();
+                        return;
+                    }
+                }
+                
                 if (totalBrutoPedido === 0) {
                      cupomAplicado.mensagem = 'Adicione itens ao carrinho antes de aplicar o cupom.';
                      cupomMessage.classList.add('cupom-error');
@@ -1596,7 +1682,7 @@
                      return;
                 }
 
-                // 2.1. Checagem de Uso Único
+                // 2.2. Checagem de Uso Único
                 if (cupomDeUsoUnico.usoUnico && cupomDeUsoUnico.usado) {
                     cupomAplicado.mensagem = 'Este cupom já foi utilizado.';
                     cupomMessage.classList.add('cupom-error');
@@ -1604,24 +1690,13 @@
                     return;
                 }
 
-                // 2.2. Checagem de Expiração
+                // 2.3. Checagem de Expiração
                 const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
                 if (cupomDeUsoUnico.expiraEm < hoje) {
                     cupomAplicado.mensagem = 'Este cupom está expirado.';
                     cupomMessage.classList.add('cupom-error');
                     atualizarTotal();
                     return;
-                }
-
-                // 2.3. Checagem de Aplicação em Cookies (se for o caso)
-                if (cupomDeUsoUnico.aplicaEm === 'cookies') {
-                    const minCookies = cupomDeUsoUnico.minCookies || 1;
-                    if (totalCookies < minCookies) {
-                        cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookies} COOKIES.`;
-                        cupomMessage.classList.add('cupom-error');
-                        atualizarTotal();
-                        return;
-                    }
                 }
                 
                 // 2.4. Aplica o Desconto
@@ -2125,7 +2200,10 @@
             // Linha riscada para separar blocos no WhatsApp
             const linhaSeparadora = "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
 
-            let resumoWhatsapp = "Olá, Favu!\nGostaria de saber a disponibilidade para encomendar os itens abaixo:\n\n\n_*- Resumo do pedido:*_\n\n";
+            // Gera o ID do pedido no início para incluir no resumo
+            const idPedido = gerarIdPedido();
+
+            let resumoWhatsapp = "Olá, Favu!\nGostaria de saber a disponibilidade para encomendar os itens abaixo:\n\nID do Pedido: " + idPedido + "\n\n" + linhaSeparadora + "\n- Resumo do pedido:\n\n";
             let totalPedido = 0; // Será preenchido com o total Bruto (sem desconto)
             let temErroDeMinimo = false;
 
@@ -2134,6 +2212,7 @@
 
             
             // 1. Preenche totaisPorGrupo (lógica repetida de atualizarTotal para validação e resumo)
+            let temItensNoPedido = false; // Flag para verificar se há itens no pedido
             document.querySelectorAll(".quantidade-input").forEach(input => {
                 const quantidade = parseInt(input.value) || 0;
                 const min = parseInt(input.getAttribute("data-min")) || 1;
@@ -2142,12 +2221,23 @@
                 const grupo = input.getAttribute("data-grupo");
                 const itemId = input.getAttribute("data-item-id");
                 
+                if (quantidade > 0) {
+                    temItensNoPedido = true; // Marca que há itens no pedido
+                }
+                
                 if (!totaisPorGrupo[grupo]) {
                     totaisPorGrupo[grupo] = { quantidade: 0, items: [] };
                 }
                 totaisPorGrupo[grupo].quantidade += quantidade;
                 totaisPorGrupo[grupo].items.push({ quantidade, min, preco, descricaoResumo, grupo, itemId });
             });
+
+            // Verifica se o pedido está realmente vazio (sem nenhum item)
+            if (!temItensNoPedido) {
+                alert("Seu pedido está vazio. Adicione itens para confirmar.");
+                fecharPopup();
+                return;
+            }
 
             // 2. Valida e Calcula o Total Bruto para o WhatsApp
             for (const grupo in totaisPorGrupo) {
@@ -2207,16 +2297,16 @@
                         if (!gruposResumo[grupo]) {
                             gruposResumo[grupo] = [];
                         }
-                        gruposResumo[grupo].push({ descricao: item.descricaoResumo, quantidade: item.quantidade });
+                        // Guarda também o preço para uso no resumo do WhatsApp e no envio para a planilha
+                        gruposResumo[grupo].push({ descricao: item.descricaoResumo, quantidade: item.quantidade, preco: item.preco });
                     }
                 });
             }
             
             // ************ VALIDAÇÃO DE BLOQUEIO ************
-            if (totalPedido === 0) {
-                alert("Seu pedido está vazio. Adicione itens para confirmar.");
-                fecharPopup();
-                return;
+            // Se totalPedido é 0 mas há itens no pedido, significa que não atingiram os mínimos
+            if (totalPedido === 0 && temItensNoPedido) {
+                temErroDeMinimo = true; // Força a mensagem de erro de mínimo
             }
 
             if (temErroDeMinimo) {
@@ -2232,14 +2322,22 @@
             const totalLiquido = totalPedido - desconto;
 
             // Bloco de itens por grupo, no formato solicitado
+            let resumoItensTexto = "";
             for (const grupo in gruposResumo) {
                 resumoWhatsapp += `* ⤷${grupo}:*\n`;
+                resumoItensTexto += `${grupo}:\n`;
+
                 gruposResumo[grupo].forEach(item => {
                     const precoUnitario = item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const totalItem = (item.quantidade * item.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    resumoWhatsapp += `${item.descricao} - ${item.quantidade} unidades (R$ ${precoUnitario} cada) = R$ ${totalItem}\n`;
+                    const linhaItem = `${item.descricao} - ${item.quantidade} unidades (R$ ${precoUnitario} cada) = R$ ${totalItem}`;
+
+                    resumoWhatsapp += `${linhaItem}\n`;
+                    resumoItensTexto += `${linhaItem}\n`;
                 });
+
                 resumoWhatsapp += `\n`; 
+                resumoItensTexto += `\n`;
             }
 
             // Linha separadora e totais
@@ -2252,18 +2350,22 @@
                  resumoWhatsapp += `Cupom: - R$ 0,00\n\n`;
             }
 
-            resumoWhatsapp += `*Total Final: R$ ${totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*\n\n`;
+            const totalFinalFormatado = totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            resumoWhatsapp += `Total Final: R$ ${totalFinalFormatado}\n\n`;
 
             const nome = document.getElementById("nome").value;
-            const telefone = document.getElementById("telefone").value;
+            const telefoneRaw = document.getElementById("telefone").value;
             const data = document.getElementById("data").value;
             const horario = document.getElementById("horario").value;
             const pagamento = document.getElementById("pagamento").value;
 
-            if (!nome || !telefone || !data || !horario || !pagamento) {
+            if (!nome || !telefoneRaw || !data || !horario || !pagamento) {
                 alert("Por gentileza, preencha todos os campos!");
                 return;
             }
+
+            // Valida e formata o telefone para WhatsApp
+            const telefone = validarEFormatarTelefone(telefoneRaw);
 
             const dataParts = data.split("-");
             const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
@@ -2271,7 +2373,25 @@
             // INCLUI A NOVA LINHA SEPARADORA E AS INFORMAÇÕES DO PEDIDO
             resumoWhatsapp += linhaSeparadora;
             
-            resumoWhatsapp += `*- Informações do Pedido:*\n\n*Nome:* ${nome}\n*Número:* ${telefone}\n\n*Data da entrega:* ${dataFormatada}\n*Horário da entrega:* ${horario}\n*Forma de pagamento:* ${pagamento}`;
+            resumoWhatsapp += `- Informações do Pedido:\n\nID do Pedido: ${idPedido}\nNome: ${nome}\nNúmero: ${telefone}\n\nData da entrega: ${dataFormatada}\nHorário da entrega: ${horario}\nForma de pagamento: ${pagamento}`;
+
+            // Envia dados do pedido para a planilha do Google Sheets
+            const dadosPedido = {
+                ID_do_Pedido: idPedido,
+                Nome_Cliente: nome,
+                Numero: telefone,
+                Data_Entrega: dataFormatada,
+                Horario_Entrega: horario,
+                Resumo_dos_Itens: resumoItensTexto.trim(),
+                Total_Final: totalFinalFormatado,
+                Forma_de_Pagamento: pagamento,
+                Cupom: cupomAplicado.codigo || "",
+                Status_Pagamento: "Pendente",
+                Status_do_Pedido: "Pedido Recebido"
+            };
+            
+            console.log("Enviando pedido para planilha:", dadosPedido);
+            enviarPedidoParaPlanilha(dadosPedido);
 
             const whatsappLink = `https://wa.me/558195256641?text=${encodeURIComponent(resumoWhatsapp)}`;
             window.open(whatsappLink, '_blank');
@@ -2281,6 +2401,9 @@
                 CUPONS_GERADOS[cupomAplicado.codigo].usado = true;
             }
 
+            // Mostra mensagem de sucesso
+            alert("Pedido realizado com sucesso!");
+            
             resetarCampos();
         }
 
