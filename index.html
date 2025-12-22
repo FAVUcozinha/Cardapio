@@ -1014,6 +1014,7 @@
     <script>
         // Variável global para armazenar o cupom aplicado
         let cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
+        let oldPedidoId = null; // Armazena o ID do pedido antigo para reedição
         
         // CONSTANTES DE CUPOM
         const CUPOM_COOKIES10 = 'COOKIES10';
@@ -1115,26 +1116,26 @@
             { nome: "Bolo de Café e Doce de Leite", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo de Café Com Doce de Leite e Chocolate Amargo - M (2.5 KG)", descricao:"Com Chocolate Amargo"},
             { nome: "Bolo de Café e Doce de Leite", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo de Café Com Doce de Leite e Chocolate Amargo - G (3.5 KG)", descricao:"Com Chocolate Amargo"},
             { nome: "Bolo de Chocolate 50%", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo de Chocolate 50% com Morangos - P (1.5 KG)", descricao:"Com Morangos"},
-            { nome: "Bolo de Chocolate 50%", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo de Chocolate 50% com Morangos - M (2.5 KG)", descricao:"Com Morangos"},
-            { nome: "Bolo de Chocolate 50%", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo de Chocolate 50% com Morangos - G (3.5 KG)", descricao:"Com Morangos"},
-            { nome: "Bolo de Delicia de Abacaxi", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - P (1.5 KG)", descricao: ""},
-            { nome: "Bolo de Delicia de Abacaxi", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - M (2.5 KG)", descricao: ""},
-            { nome: "Bolo de Delicia de Abacaxi", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - G (3.5 KG)", descricao: ""},
+            { nome: "Bolo de Chocolate 50%", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo de Chocolate 50% com Morangos - M (2.5 KG)", descricao:"Com Morangos"},
+            { nome: "Bolo de Chocolate 50%", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo de Chocolate 50% com Morangos - G (3.5 KG)", descricao:"Com Morangos"},
+            { nome: "Bolo de Delicia de Abacaxi", tamanho: "P (1.5 KG)", preco: 105.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - P (1.5 KG)", descricao: ""},
+            { nome: "Bolo de Delicia de Abacaxi", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - M (2.5 KG)", descricao: ""},
+            { nome: "Bolo de Delicia de Abacaxi", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo de Delicia de Abacaxi - G (3.5 KG)", descricao: ""},
             { nome: "Bolo de Morango", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo de Morango com Brigadeiro Branco e Chantinhinho - P (1.5 KG)", descricao: "Com Recheio de Brigadeiro Branco e Cobertura de Chantininho"},
-            { nome: "Bolo de Morango", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo de Morango com Brigadeiro Branco e Chantinhinho - M (2.5 KG)", descricao: "Com Recheio de Brigadeiro Branco e Cobertura de Chantininho"},
-            { nome: "Bolo de Morango", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo de Morango com Brigadeiro Branco e Chantinhinho - G (3.5 KG)", descricao: "Com Recheio de Brigadeiro Branco e Cobertura de Chantininho"},
+            { nome: "Bolo de Morango", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo de Morango com Brigadeiro Branco e Chantinhinho - M (2.5 KG)", descricao: "Com Recheio de Brigadeiro Branco e Cobertura de Chantininho"},
+            { nome: "Bolo de Morango", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo de Morango com Brigadeiro Branco e Chantinhinho - G (3.5 KG)", descricao: "Com Recheio de Brigadeiro Branco e Cobertura de Chantininho"},
             { nome: "Bolo de Ninho trufado", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo de Ninho trufado - P (1.5 KG)", descricao: "Com chocolate Branco"},
-            { nome: "Bolo de Ninho trufado", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo de Ninho trufado - M (2.5 KG)", descricao: "Com chocolate Branco"},
-            { nome: "Bolo de Ninho trufado", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo de Ninho trufado - G (3.5 KG)", descricao: "Com chocolate Branco"},
+            { nome: "Bolo de Ninho trufado", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo de Ninho trufado - M (2.5 KG)", descricao: "Com chocolate Branco"},
+            { nome: "Bolo de Ninho trufado", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo de Ninho trufado - G (3.5 KG)", descricao: "Com chocolate Branco"},
             { nome: "🎄Bolo de Noiva", tamanho: "P (1.5 KG)", preco: 145.00, min: 1, descricaoResumo: "Bolo de noiva - P (1.5 KG)", descricao: "Com cobertura de glacê "},
             { nome: "🎄Bolo de Noiva", tamanho: "M (2.5 KG)", preco: 240.00, min: 1, descricaoResumo: "Bolo de noiva - M (2.5 KG)", descricao: "Com cobertura de glacê "},
             { nome: "🎄Bolo de Noiva", tamanho: "G (3.5 KG)", preco: 335.00, min: 1, descricaoResumo: "Bolo de noiva - G (3.5 KG)", descricao: "Com cobertura de glacê "},
-            { nome: "Bolo Prestígio", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo Prestígio - P (1.5 KG)", descricao: ""},
-            { nome: "Bolo Prestígio", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo Prestígio - M (2.5 KG)", descricao: ""},
-            { nome: "Bolo Prestígio", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo Prestígio - G (3.5 KG)", descricao: ""},    
-            { nome: "Bolo Red velvet", tamanho: "P (1.5 KG)", preco: 110.00, min: 1, descricaoResumo: "Bolo Red velvet - P (1.5 KG)", descricao: ""},
-            { nome: "Bolo Red velvet", tamanho: "M (2.5 KG)", preco: 180.00, min: 1, descricaoResumo: "Bolo Red velvet - M (2.5 KG)", descricao: ""},
-            { nome: "Bolo Red velvet", tamanho: "G (3.5 KG)", preco: 250.00, min: 1, descricaoResumo: "Bolo Red Velvet - G (3.5 KG)", descricao: ""},
+            { nome: "Bolo Prestígio", tamanho: "P (1.5 KG)", preco: 105.00, min: 1, descricaoResumo: "Bolo Prestígio - P (1.5 KG)", descricao: ""},
+            { nome: "Bolo Prestígio", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo Prestígio - M (2.5 KG)", descricao: ""},
+            { nome: "Bolo Prestígio", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo Prestígio - G (3.5 KG)", descricao: ""},    
+            { nome: "Bolo Red velvet", tamanho: "P (1.5 KG)", preco: 105.00, min: 1, descricaoResumo: "Bolo Red velvet - P (1.5 KG)", descricao: ""},
+            { nome: "Bolo Red velvet", tamanho: "M (2.5 KG)", preco: 175.00, min: 1, descricaoResumo: "Bolo Red velvet - M (2.5 KG)", descricao: ""},
+            { nome: "Bolo Red velvet", tamanho: "G (3.5 KG)", preco: 245.00, min: 1, descricaoResumo: "Bolo Red Velvet - G (3.5 KG)", descricao: ""},
         ]).map(item => ({...item, id: generateId(item.nome, item.tamanho)}));
 
         const itensDoces = addGroupKeys([
@@ -1276,7 +1277,7 @@
         // -----------------------------------------------------
         // INTEGRAÇÃO COM GOOGLE SHEETS (ACOMPANHAMENTO DE PEDIDOS)
         // -----------------------------------------------------
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbySznszHzGE20MWh8DFmYZfywgtih8_JojKwX9vZXOypxJ6BMFVLMey1ZF9sOoX_QKAXQ/exec";
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzDSIjme2I0kC2ccEsYqgyd4vG-vVS03zJiXNx5wJDEaRylz2R80y9evrFasjycCi-hkA/exec";
 
         function gerarIdPedido() {
             const agora = new Date();
@@ -1337,11 +1338,20 @@
                 const params = new URLSearchParams();
                 
                 // Adiciona o parâmetro de ação para o script multifunção
-                params.append('action', 'create');
+                // Se dadosPedido já tiver action (reedição), usa ele, senão usa 'create'
+                const action = dadosPedido.action || 'create';
+                params.append('action', action);
                 
-                // Adiciona todos os campos do pedido
+                // Se for reedição, adiciona oldId
+                if (action === 'replacePedido' && dadosPedido.oldId) {
+                    params.append('oldId', dadosPedido.oldId);
+                }
+                
+                // Adiciona todos os campos do pedido (exceto action e oldId que já foram adicionados)
                 for (const key in dadosPedido) {
-                    params.append(key, dadosPedido[key] || '');
+                    if (key !== 'action' && key !== 'oldId') {
+                        params.append(key, dadosPedido[key] || '');
+                    }
                 }
                 
                 fetch(GOOGLE_SHEETS_URL, {
@@ -2369,11 +2379,18 @@
 
             const dataParts = data.split("-");
             const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+            
+            // Formatação de Horário no Envio - Limpa o horário para garantir formato HH:MM
+            const horarioLimpo = String(document.getElementById('horario').value).substring(0, 5);
 
             // INCLUI A NOVA LINHA SEPARADORA E AS INFORMAÇÕES DO PEDIDO
             resumoWhatsapp += linhaSeparadora;
             
-            resumoWhatsapp += `- Informações do Pedido:\n\nID do Pedido: ${idPedido}\nNome: ${nome}\nNúmero: ${telefone}\n\nData da entrega: ${dataFormatada}\nHorário da entrega: ${horario}\nForma de pagamento: ${pagamento}`;
+            resumoWhatsapp += `- Informações do Pedido:\n\nID do Pedido: ${idPedido}\nNome: ${nome}\nNúmero: ${telefone}\n\nData da entrega: ${dataFormatada}\nHorário da entrega: ${horarioLimpo}\nForma de pagamento: ${pagamento}`;
+
+            // Verifica se existe campo de Observações no formulário
+            const observacoesElement = document.getElementById("observacoes") || document.getElementById("Observacoes") || document.getElementById("observações") || document.getElementById("Observações");
+            const observacoes = observacoesElement ? observacoesElement.value.trim() : '';
 
             // Envia dados do pedido para a planilha do Google Sheets
             const dadosPedido = {
@@ -2381,7 +2398,7 @@
                 Nome_Cliente: nome,
                 Numero: telefone,
                 Data_Entrega: dataFormatada,
-                Horario_Entrega: horario,
+                Horario_Entrega: horarioLimpo,
                 Resumo_dos_Itens: resumoItensTexto.trim(),
                 Total_Final: totalFinalFormatado,
                 Forma_de_Pagamento: pagamento,
@@ -2389,6 +2406,17 @@
                 Status_Pagamento: "Pendente",
                 Status_do_Pedido: "Pedido Recebido"
             };
+            
+            // Adiciona Observacoes ao objeto se existir
+            if (observacoes) {
+                dadosPedido.Observacoes = observacoes;
+            }
+            
+            // Se oldPedidoId não for nulo, adiciona action e oldId para reedição
+            if (oldPedidoId !== null) {
+                dadosPedido.action = 'replacePedido';
+                dadosPedido.oldId = oldPedidoId;
+            }
             
             console.log("Enviando pedido para planilha:", dadosPedido);
             enviarPedidoParaPlanilha(dadosPedido);
@@ -2435,6 +2463,33 @@
         // -----------------------------------------------------
         
         document.addEventListener("DOMContentLoaded", function () {
+            
+            // 0. Verifica parâmetros da URL para reedição de pedidos
+            const urlParams = new URLSearchParams(window.location.search);
+            const nomeParam = urlParams.get('nome');
+            const telParam = urlParams.get('tel');
+            const oldIdParam = urlParams.get('oldId');
+            
+            // Se existirem parâmetros, preenche os campos automaticamente
+            if (nomeParam || telParam || oldIdParam) {
+                if (nomeParam) {
+                    const nomeInput = document.getElementById('nome');
+                    if (nomeInput) {
+                        nomeInput.value = decodeURIComponent(nomeParam);
+                    }
+                }
+                
+                if (telParam) {
+                    const telefoneInput = document.getElementById('telefone');
+                    if (telefoneInput) {
+                        telefoneInput.value = decodeURIComponent(telParam);
+                    }
+                }
+                
+                if (oldIdParam) {
+                    oldPedidoId = decodeURIComponent(oldIdParam);
+                }
+            }
             
             // 1. Cria as tabelas
             for (const idTabela in gruposItens) {
@@ -2535,4 +2590,3 @@
     
 </body>
 </html>
-
