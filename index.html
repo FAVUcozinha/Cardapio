@@ -1016,48 +1016,47 @@
         let cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
         let oldPedidoId = null; // Armazena o ID do pedido antigo para reedição
         
-        // CONSTANTES DE CUPOM
-        const CUPOM_COOKIES10 = 'COOKIES10';
-        const CUPOM_FAVU10 = 'FAVU10OFF';
-        const CUPOM_FAVUCOOKIES = 'FAVUCOOKIES';
-        
         // =======================================================
-        // NOVOS CUPONS GERADOS (USO ÚNICO E VALIDADE: ATÉ 28/02/2026)
+        // CUPONS GERADOS (USO ÚNICO E VALIDADE: ATÉ 28/02/2026)
         // =======================================================
         const CUPONS_GERADOS = {
-            // Exemplo de cupom de uso único solicitado (10% OFF no total, válido até 28/02/2026)
-            '11850273430': { 
-                descontoTipo: 'percentual', 
-                valor: 0.10, // 10%
-                aplicaEm: 'total', 
-                expiraEm: '2026-02-28', // Data de Expiração
-                usoUnico: true,
-                usado: false 
-            },
-            // Exemplo de cupom de uso único solicitado (10% OFF no total, válido até 28/02/2026)
-            '0047': { 
-                descontoTipo: 'percentual', 
-                valor: 0.10, // 10%
-                aplicaEm: 'total', 
-                expiraEm: '2026-02-28', // Data de Expiração
-                usoUnico: true,
-                usado: false 
-            },
-            // Inclua novos cupons de uso único aqui (uso único é uma simulação)
-            'NOVO15REAIS': { 
-                descontoTipo: 'valorFixo', 
-                valor: 15.00, // R$ 15,00 de desconto
+            'FAVU09779811427': {
+                descontoTipo: 'percentual',
+                valor: 0.10,
                 aplicaEm: 'total',
                 expiraEm: '2026-02-28',
                 usoUnico: true,
-                usado: false 
+                usado: false
             },
-            'COOK20OFF': {
-                descontoTipo: 'percentual', 
-                valor: 0.20, // 20%
-                aplicaEm: 'cookies',
+            'FAVU07453741408': {
+                descontoTipo: 'percentual',
+                valor: 0.10,
+                aplicaEm: 'total',
                 expiraEm: '2026-02-28',
-                minCookies: 4, 
+                usoUnico: true,
+                usado: false
+            },
+            'FAVU10798497424': {
+                descontoTipo: 'percentual',
+                valor: 0.10,
+                aplicaEm: 'total',
+                expiraEm: '2026-02-28',
+                usoUnico: true,
+                usado: false
+            },
+            'FAVU53648820478': {
+                descontoTipo: 'percentual',
+                valor: 0.10,
+                aplicaEm: 'total',
+                expiraEm: '2026-02-28',
+                usoUnico: true,
+                usado: false
+            },
+            'FAVU08805480452': {
+                descontoTipo: 'percentual',
+                valor: 0.10,
+                aplicaEm: 'total',
+                expiraEm: '2026-02-28',
                 usoUnico: true,
                 usado: false
             }
@@ -1277,7 +1276,32 @@
         // -----------------------------------------------------
         // INTEGRAÇÃO COM GOOGLE SHEETS (ACOMPANHAMENTO DE PEDIDOS)
         // -----------------------------------------------------
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzDSIjme2I0kC2ccEsYqgyd4vG-vVS03zJiXNx5wJDEaRylz2R80y9evrFasjycCi-hkA/exec";
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxg41fkz_lDRKUTcnukG-LmuasWR_W6C7QovJo7Vdll58snz9MknU9f5QZ2KWKOOSA/exec";
+
+        /**
+         * Verifica se um cupom já foi usado consultando a planilha do Google Sheets
+         * @param {string} cupomCode - Código do cupom a ser verificado
+         * @returns {Promise<boolean>} - Retorna true se o cupom já foi usado, false caso contrário
+         */
+        async function verificarCupomNaPlanilha(cupomCode) {
+            try {
+                const response = await fetch(`${GOOGLE_SHEETS_URL}?action=checkCupom&cupom=${encodeURIComponent(cupomCode)}`);
+                const data = await response.json();
+                
+                if (data && typeof data.used === 'boolean') {
+                    return data.used; // Retorna true se já foi usado, false caso contrário
+                }
+                
+                // Se a resposta não tiver o formato esperado, retorna false (fail-open)
+                console.warn("Resposta inesperada da API de verificação de cupom:", data);
+                return false;
+            } catch (error) {
+                console.error("Erro ao verificar cupom na planilha:", error);
+                // Em caso de erro, retorna false para não bloquear o uso do cupom
+                // (fail-open: melhor permitir do que bloquear por erro técnico)
+                return false;
+            }
+        }
 
         function gerarIdPedido() {
             const agora = new Date();
@@ -1595,10 +1619,14 @@
             if (cupomInput) cupomInput.value = '';
         }
 
-        function aplicarCupom() {
+        async function aplicarCupom() {
             const cupomInput = document.getElementById('cupom-input');
             const cupomCode = cupomInput.value.toUpperCase().trim();
             const cupomMessage = document.getElementById('cupom-message');
+            const applyBtn = document.getElementById('apply-cupom-btn');
+            
+            // Salva o texto original do botão
+            const textoOriginalBtn = applyBtn.textContent;
             
             cupomAplicado = { codigo: null, desconto: 0, mensagem: '' };
             cupomMessage.className = 'cupom-message'; // Reset classes
@@ -1705,11 +1733,39 @@
                 if (cupomDeUsoUnico.expiraEm < hoje) {
                     cupomAplicado.mensagem = 'Este cupom está expirado.';
                     cupomMessage.classList.add('cupom-error');
+                    cupomMessage.textContent = cupomAplicado.mensagem;
                     atualizarTotal();
                     return;
                 }
                 
-                // 2.4. Aplica o Desconto
+                // 2.4. Verificação de Uso Único no Servidor (Planilha)
+                // Ativa feedback visual no botão
+                applyBtn.textContent = 'Validando...';
+                applyBtn.disabled = true;
+                
+                try {
+                    const cupomJaUsado = await verificarCupomNaPlanilha(cupomCode);
+                    
+                    // Restaura o botão
+                    applyBtn.textContent = textoOriginalBtn;
+                    applyBtn.disabled = false;
+                    
+                    if (cupomJaUsado) {
+                        cupomAplicado.mensagem = 'Este cupom já foi utilizado em um pedido anterior.';
+                        cupomMessage.classList.add('cupom-error');
+                        cupomMessage.textContent = cupomAplicado.mensagem;
+                        atualizarTotal();
+                        return;
+                    }
+                } catch (error) {
+                    // Restaura o botão em caso de erro
+                    applyBtn.textContent = textoOriginalBtn;
+                    applyBtn.disabled = false;
+                    console.error("Erro ao verificar cupom:", error);
+                    // Continua com a aplicação mesmo em caso de erro (fail-open)
+                }
+                
+                // 2.5. Aplica o Desconto
                 let baseCalculo = totalBrutoPedido;
                 let mensagemDesconto = `OFF no total`;
 
@@ -1736,102 +1792,24 @@
                     mensagem: `CUPOM ${cupomCode} APLICADO! (${mensagemDesconto})` 
                 };
                 cupomMessage.classList.add('cupom-success');
+                cupomMessage.textContent = cupomAplicado.mensagem;
 
-
-            // --- 3. TRATAMENTO DE CUPONS DE USO COMUM (ANTIGOS) ---
-
-            } else if (cupomCode === CUPOM_FAVU10) {
-                
-                const taxaDesconto = 0.10;
-                if (totalBrutoPedido === 0) {
-                    cupomAplicado.mensagem = 'Adicione itens ao carrinho antes de aplicar o cupom.';
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-                
-                const descontoTotal = totalBrutoPedido * taxaDesconto;
-                
-                cupomAplicado = {
-                    codigo: cupomCode,
-                    desconto: descontoTotal, 
-                    mensagem: `CUPOM ${cupomCode} APLICADO! (10% OFF no total)`  
-                };
-                cupomMessage.classList.add('cupom-success');
-                
-            } else if (cupomCode === CUPOM_COOKIES10) {
-                
-                const taxaDesconto = 0.10;
-                const minCookiesCupom = 4;
-                
-                if (!hasCookieItem) {
-                    cupomAplicado.mensagem = 'Cupom válido apenas para Cookies.';
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-                
-                if (totalCookies < minCookiesCupom) {
-                    cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookiesCupom} COOKIES.`;
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-                
-                const descontoTotal = subtotalCookies * taxaDesconto; 
-                
-                cupomAplicado = {
-                    codigo: cupomCode,
-                    desconto: descontoTotal, 
-                    mensagem: `CUPOM ${cupomCode} APLICADO! (10% OFF em Cookies)` 
-                };
-                cupomMessage.classList.add('cupom-success');
-                
-            } else if (cupomCode === CUPOM_FAVUCOOKIES) {
-                
-                const taxaDesconto = 0.10;
-                const minCookiesCupom = 4;
-                
-                if (!hasCookieItem) {
-                    cupomAplicado.mensagem = 'Cupom válido apenas para Cookies.';
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-                
-                const dataAtual = new Date();
-                const diaDaSemana = dataAtual.getDay(); 
-
-                if (diaDaSemana === 0 || diaDaSemana === 5 || diaDaSemana === 6) { 
-                    cupomAplicado.mensagem = 'Cupom válido apenas para pedidos realizados entre Segunda e Quinta-feira.';
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-
-                if (totalCookies < minCookiesCupom) {
-                    cupomAplicado.mensagem = `CUPOM VÁLIDO APENAS PARA NO MÍNIMO ${minCookiesCupom} COOKIES.`;
-                    cupomMessage.classList.add('cupom-error');
-                    atualizarTotal();
-                    return;
-                }
-                
-                const descontoTotal = subtotalCookies * taxaDesconto; 
-                
-                cupomAplicado = {
-                    codigo: cupomCode,
-                    desconto: descontoTotal, 
-                    mensagem: `CUPOM ${cupomCode} APLICADO! (10% OFF)` 
-                };
-                cupomMessage.classList.add('cupom-success');
-                
             } else if (cupomCode) {
                 // CUPOM INVÁLIDO GENÉRICO
                 cupomAplicado.mensagem = `Código "${cupomCode}" inválido.`;
                 cupomMessage.classList.add('cupom-error');
+                cupomMessage.textContent = cupomAplicado.mensagem;
             }
             
-            cupomMessage.textContent = cupomAplicado.mensagem;
+            // Garante que o botão está restaurado ao final
+            if (applyBtn) {
+                applyBtn.textContent = textoOriginalBtn;
+                applyBtn.disabled = false;
+            }
+            
+            if (cupomAplicado.mensagem) {
+                cupomMessage.textContent = cupomAplicado.mensagem;
+            }
             atualizarTotal();
         }
 
@@ -2590,4 +2568,5 @@
     
 </body>
 </html>
+
 
