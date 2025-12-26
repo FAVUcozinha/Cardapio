@@ -653,7 +653,8 @@
         #form-pedido input[type="tel"],
         #form-pedido input[type="date"],
         #form-pedido input[type="time"],
-        #form-pedido select {
+        #form-pedido select,
+        #form-pedido textarea {
             background-color: white; 
             color: #1A2B0F;
             border: 1px solid #399466; 
@@ -962,6 +963,9 @@
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="Cartão">Cartão</option>
                     </select>
+
+                    <label for="observacoes">OBSERVAÇÕES:</label>
+                    <textarea id="observacoes" name="Observacoes" placeholder="Informações adicionais (ex.: alergias, ponto do bolo, endereço de entrega alternativo)" rows="3"></textarea>
 
                     <div class="form-buttons-row">
                         <button type="button" onclick="fecharPopup()">CONTINUAR COMPRANDO</button> 
